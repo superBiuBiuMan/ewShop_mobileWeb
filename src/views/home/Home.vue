@@ -66,65 +66,57 @@ export default {
       new: { page: 1, list: [] },
     });
     /* 变量-better-scroll示例对象 */
-    let bs = reactive({});
+
     /* 变量-记录当前索引 */
     let currentIndex = ref(0);
     /* 计算-当前类型 */
-    // let currentType = computed(() => {
-    //   console.log('啊啊啊1');
-    //   return typeAll[currentIndex.value];
-    // });
     const currentType = ref("sales");
     /* 存储-索引对应关系 */
     let typeAll = ["sales", "recommend", "new"];
     /* 计算-获取当前展示列表数据 */
     let showData = computed(() => {
-      console.log('啊啊啊2');
       return goods[currentType.value].list;
     });
 
-    onMounted(() => {
-      console.log("onMounted");
-      /* 请求-获取推荐书籍 */
-      reqIndex()
-        .then((response) => {
-          // 好像不用可选链操作符也可以
-          // bannerData.value = response?.go1ods?.da1ta;
-          // bannerData.value = response.goods.data;
-          goods[currentType.value].list = response.goods.data;
-          //1.数据初始化完成后才开始执行better-scroll初始化操作
-          nextTick(() => {
-            console.log(document.querySelector(".good").clientHeight);
-            bs = new BetterScroll(".home-wrapper", {
-              probeType: 3,
-              click: true,
-              pullUpLoad: true,
-              disableMouse: false,
-              disableTouch: false,
-            });
-            console.log(bs);
-          });
-        })
-        .catch((error) => {});
+    let bs = reactive({});
+    onMounted(async () => {
+      /* 请求-获取畅销书籍*/
+      let salesData = await reqIndex();
+      goods.sales.list = salesData.goods.data;
+      /* 请求-获取推荐书籍*/
+      let recommendData = await reqProgram("recommend");
+      goods.recommend.list = recommendData.goods.data;
+      /* 请求-获取精选书籍 */
+      let newData = await reqProgram("new");
+      goods.new.list = newData.goods.data;
+      // 创建BetterScroll对象
+      bs = new BetterScroll(document.querySelector(".home-wrapper"), {
+        probeType: 3,
+        click: true,
+        pullUpLoad: true,
+      });
+    });
+    watchEffect(() => {
+      nextTick(() => {
+        // 重新计算高度
+        bs && bs.refresh();
+      });
     });
     /* 自定义事件-TableControl栏目发生改变的时候 */
     function indexChange(newIndex) {
-      console.log("调用了");
       //更新索引
       currentIndex.value = newIndex;
-      let category = currentType.value; //当前查看数据项
-      // console.log(category);
-      reqProgram(category).then((response) => {
-        // console.log(response);
-        goods[category].list = response.goods.data;
+      currentType.value = typeAll[newIndex]; //更改当前类型
+
+      reqProgram(currentType.value).then((response) => {
+        goods[currentType.value].list = response.goods.data;
       });
     }
 
     return {
-      // bannerData,
       indexChange,
       showData,
-      goods
+      goods,
     };
   },
 };
