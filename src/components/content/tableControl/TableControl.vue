@@ -5,16 +5,9 @@
       :key="index"
       @click.prevent="changeActive(index)"
       class="table-control-item"
-      :class="{ active: currentIndex == index }"
-    >
-      <span>{{item}}</span>
+      :class="{ active: currentIndex == index }" >
+      <span>{{ item }}</span>
     </div>
-    <!-- <div class="table-control-item">
-      <span>新书</span>
-    </div>
-    <div class="table-control-item">
-      <span>精选</span>
-    </div> -->
   </div>
 </template>
 
@@ -31,18 +24,18 @@ export default {
       },
     },
   },
-  setup(props,{emit}) {
+  setup(props, { emit }) {
     //当前active的默认索引
     let currentIndex = ref(0);
-
     /* 改变当前默认active索引 */
-    function changeActive(index){
-        currentIndex.value = index;
-        emit("indexChange",index);
+    function changeActive(index) {
+      currentIndex.value = index;
+      //触发自定义事件
+      emit("indexChange", index);
     }
     return {
       currentIndex,
-      changeActive
+      changeActive,
     };
   },
 };

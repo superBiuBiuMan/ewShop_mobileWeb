@@ -5,7 +5,7 @@
     </Navbar>
     <!-- 列表 -->
     <TableControlVue
-      v-show="false"
+      v-show="isShowTable"
       @indexChange="indexChange"
       :tableControlTitle="['畅销', '推荐', '精选']"
     ></TableControlVue>
@@ -20,10 +20,12 @@
         <!-- banner  -->
         <Banner :bannerData="goods.sales.list"></Banner>
         <!-- 列表 -->
-        <TableControlVue
-          @indexChange="indexChange"
-          :tableControlTitle="['畅销', '推荐', '精选']"
-        ></TableControlVue>
+        <div class="table-panel">
+          <TableControlVue
+            @indexChange="indexChange"
+            :tableControlTitle="['畅销', '推荐', '精选']"
+          ></TableControlVue>
+        </div>
         <!-- 书籍展示 -->
         <GoodList :showData="showData"></GoodList>
       </div>
@@ -48,6 +50,7 @@ import {
 } from "vue";
 /* 第三方插件 */
 import BetterScroll from "better-scroll";
+import throttle from "lodash/throttle";
 export default {
   name: "Home",
   components: {
@@ -57,15 +60,14 @@ export default {
     GoodList,
   },
   setup() {
-    /* 存储-推荐数据数据 */
-    // let bannerData = ref([]);
+    //控制另外一个TableControl的显示
+    let isShowTable = ref(false);
     /* 存储-畅销,推荐,精选数据 */
     let goods = reactive({
       sales: { page: 1, list: [] },
       recommend: { page: 1, list: [] },
       new: { page: 1, list: [] },
     });
-    /* 变量-better-scroll示例对象 */
 
     /* 变量-记录当前索引 */
     let currentIndex = ref(0);
@@ -77,9 +79,11 @@ export default {
     let showData = computed(() => {
       return goods[currentType.value].list;
     });
-
+    /* 变量-better-scroll示例对象 */
     let bs = reactive({});
+
     onMounted(async () => {
+      //距离顶部的距离和加上自己的宽度
       /* 请求-获取畅销书籍*/
       let salesData = await reqIndex();
       goods.sales.list = salesData.goods.data;
@@ -95,11 +99,41 @@ export default {
         click: true,
         pullUpLoad: true,
       });
+      let abc = document.querySelector(".table-panel").getBoundingClientRect();
+      //添加滚动事件,使用下节流阀
+      bs.on( "scroll",throttle((position) => {
+          //滚动的距离大于了TableControl组件初始化时候到顶部的距离 - TableControl的高度的时候,就显示另外一个
+          if (-position.y > abc.top - abc.height - 5) {
+            //显示副control
+            isShowTable.value = true;
+          } else {
+            //隐藏副control
+            isShowTable.value = false;
+          }
+      }, 80) );
+
+      //添加滚动到底部事件
+      bs.on("pullingUp",throttle(async ()=>{
+          console.log("到底部了");
+          //发送ajax请求获取新页
+          const page = goods[currentType.value].page + 1;
+          let result = await reqProgram(currentType.value, page);
+          //新请求的数据添加到原来数据
+          goods[currentType.value].list.push(...result.goods.data);
+          //页数+1
+          goods[currentType.value].page ++;
+          //完成下拉动作
+          bs.finishPullUp();
+          //重新计算
+          bs.refresh();
+      },80))
     });
     watchEffect(() => {
       nextTick(() => {
         // 重新计算高度
-        bs && bs.refresh();
+        if (Object.keys(bs).length != 0) {
+          bs && bs.refresh();
+        }
       });
     });
     /* 自定义事件-TableControl栏目发生改变的时候 */
@@ -107,9 +141,14 @@ export default {
       //更新索引
       currentIndex.value = newIndex;
       currentType.value = typeAll[newIndex]; //更改当前类型
-
-      reqProgram(currentType.value).then((response) => {
-        goods[currentType.value].list = response.goods.data;
+      // reqProgram(currentType.value).then((response) => {
+      //   goods[currentType.value].list = response.goods.data;
+      // });
+      nextTick(() => {
+        // 重新计算高度
+        if (Object.keys(bs).length != 0) {
+          bs && bs.refresh();
+        }
       });
     }
 
@@ -117,6 +156,8 @@ export default {
       indexChange,
       showData,
       goods,
+      isShowTable,
+      currentIndex
     };
   },
 };
@@ -130,7 +171,7 @@ export default {
     position: absolute;
     //隔开底部
     top: 0;
-    bottom: 50px;
+    bottom: 53px;
     //占满宽度  内容居中
     left: 0;
     right: 0;
