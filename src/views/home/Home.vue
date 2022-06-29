@@ -1,11 +1,12 @@
 <template>
+ 
   <div id="home">
     <Navbar>
       <template #default> 图书兄弟 </template>
     </Navbar>
     <!-- 列表 -->
     <TableControlVue
-      v-show="isShowTable"
+      v-show="isShow"
       @indexChange="indexChange"
       :tableControlTitle="['畅销', '推荐', '精选']"
     ></TableControlVue>
@@ -30,7 +31,9 @@
         <GoodList :showData="showData"></GoodList>
       </div>
     </div>
+    <ToTop v-show="isShow"></ToTop>
   </div>
+ 
 </template>
 
 <script>
@@ -38,6 +41,7 @@ import Navbar from "@/components/common/navbar/Navbar";
 import Banner from "@/views/home/Child/Banner";
 import TableControlVue from "@/components/content/tableControl/TableControl";
 import GoodList from "@/components/content/good/GoodList";
+import ToTop from "@/components/common/toTop/ToTop";
 import { reqIndex, reqProgram } from "@/api/home";
 import {
   reactive,
@@ -58,10 +62,11 @@ export default {
     Banner,
     TableControlVue,
     GoodList,
+    ToTop
   },
   setup() {
     //控制另外一个TableControl的显示
-    let isShowTable = ref(false);
+    let isShow = ref(false);
     /* 存储-畅销,推荐,精选数据 */
     let goods = reactive({
       sales: { page: 1, list: [] },
@@ -103,14 +108,8 @@ export default {
       //添加滚动事件,使用下节流阀
       bs.on( "scroll",throttle((position) => {
           //滚动的距离大于了TableControl组件初始化时候到顶部的距离 - TableControl的高度的时候,就显示另外一个
-          if (-position.y > abc.top - abc.height - 5) {
-            //显示副control
-            isShowTable.value = true;
-          } else {
-            //隐藏副control
-            isShowTable.value = false;
-          }
-      }, 80) );
+          isShow.value = -position.y > abc.top - abc.height - 5;
+      }, 100) );
 
       //添加滚动到底部事件
       bs.on("pullingUp",throttle(async ()=>{
@@ -156,7 +155,7 @@ export default {
       indexChange,
       showData,
       goods,
-      isShowTable,
+      isShow,
       currentIndex
     };
   },

@@ -21,6 +21,14 @@
     </router-link>
   </nav>
 
+  <!-- keepalive  -->
+  <!-- <router-view v-slot="{ Component }">
+    <transition>
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </transition>
+  </router-view> -->
   <router-view />
 </template>
 
@@ -46,19 +54,19 @@ nav {
   right: 0;
   bottom: 0;
   background-color: #eeeeee;
-  box-shadow: 0 3px 1px 5px rgba(0,0,0,0.1);
-  .tab-bar-item{
+  box-shadow: 0 3px 1px 5px rgba(0, 0, 0, 0.1);
+  .tab-bar-item {
     // 字体图标
     font-size: var(--font-size);
     height: 50px;
     text-align: center;
-    
-    div:first-child{
+
+    div:first-child {
       margin-top: 4px;
       display: inline-block;
       vertical-align: middle;
     }
-    div:last-child{
+    div:last-child {
       margin-top: 4px;
     }
   }
