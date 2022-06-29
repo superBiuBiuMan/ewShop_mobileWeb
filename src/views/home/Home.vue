@@ -31,7 +31,7 @@
         <GoodList :showData="showData"></GoodList>
       </div>
     </div>
-    <ToTop v-show="isShow"></ToTop>
+    <ToTop v-show="isShow" @toTopFn="toTopFn"></ToTop>
   </div>
  
 </template>
@@ -127,6 +127,7 @@ export default {
           bs.refresh();
       },80))
     });
+    
     watchEffect(() => {
       nextTick(() => {
         // 重新计算高度
@@ -135,6 +136,10 @@ export default {
         }
       });
     });
+    /* 自定义事件-回到顶部 */
+    function toTopFn(delay){
+      bs.scrollTo(0,0,delay);
+    }
     /* 自定义事件-TableControl栏目发生改变的时候 */
     function indexChange(newIndex) {
       //更新索引
@@ -156,7 +161,8 @@ export default {
       showData,
       goods,
       isShow,
-      currentIndex
+      currentIndex,
+      toTopFn
     };
   },
 };

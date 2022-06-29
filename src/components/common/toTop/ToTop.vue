@@ -1,11 +1,20 @@
 <template>
-  <div class="go-top">
+  <div class="go-top" @click="toTop">
   </div>
 </template>
 
 <script>
 export default {
   name: 'ToTop',
+  setup(props,{emit}){
+      function toTop(){
+          //触发移动到顶部自定义事件,并设置延迟为400ms
+          emit('toTopFn',400);
+      }
+      return {
+          toTop,
+      }
+  }
 }
 </script>
 
