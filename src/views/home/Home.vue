@@ -1,5 +1,4 @@
 <template>
-  
   <div id="home">
     <Navbar>
       <template #default> 图书兄弟 </template>
@@ -15,9 +14,8 @@
       <!-- 内容区 -->
       <div class="home-content">
         <!-- 轮播图 -->
-        <div class="slide">
-          <img src="@/assets/image/img.png" />
-        </div>
+        
+        <SwiperShow :swiperData="swiperData"></SwiperShow>
         <!-- banner  -->
         <Banner :bannerData="goods.sales.list"></Banner>
         <!-- 列表 -->
@@ -33,7 +31,6 @@
     </div>
     <ToTop v-show="isShow" @toTopFn="toTopFn"></ToTop>
   </div>
- 
 </template>
 
 <script>
@@ -42,6 +39,7 @@ import Banner from "@/views/home/Child/Banner";
 import TableControlVue from "@/components/content/tableControl/TableControl";
 import GoodList from "@/components/content/good/GoodList";
 import ToTop from "@/components/common/toTop/ToTop";
+import SwiperShow from "@/views/home/Child/SwiperShow";
 import { reqIndex, reqProgram } from "@/api/home";
 import {
   reactive,
@@ -62,7 +60,8 @@ export default {
     Banner,
     TableControlVue,
     GoodList,
-    ToTop
+    ToTop,
+    SwiperShow,
   },
   setup() {
     //控制另外一个TableControl的显示
@@ -84,6 +83,7 @@ export default {
     let showData = computed(() => {
       return goods[currentType.value].list;
     });
+    let swiperData = ref([]);
     /* 变量-better-scroll示例对象 */
     let bs = reactive({});
 
@@ -92,6 +92,8 @@ export default {
       /* 请求-获取畅销书籍*/
       let salesData = await reqIndex();
       goods.sales.list = salesData.goods.data;
+      //轮播图数据
+      swiperData.value = salesData.slides;
       /* 请求-获取推荐书籍*/
       let recommendData = await reqProgram("recommend");
       goods.recommend.list = recommendData.goods.data;
@@ -106,13 +108,18 @@ export default {
       });
       let abc = document.querySelector(".table-panel").getBoundingClientRect();
       //添加滚动事件,使用下节流阀
-      bs.on( "scroll",throttle((position) => {
+      bs.on(
+        "scroll",
+        throttle((position) => {
           //滚动的距离大于了TableControl组件初始化时候到顶部的距离 - TableControl的高度的时候,就显示另外一个
           isShow.value = -position.y > abc.top - abc.height - 5;
-      }, 100) );
+        }, 100)
+      );
 
       //添加滚动到底部事件
-      bs.on("pullingUp",throttle(async ()=>{
+      bs.on(
+        "pullingUp",
+        throttle(async () => {
           console.log("到底部了");
           //发送ajax请求获取新页
           const page = goods[currentType.value].page + 1;
@@ -120,14 +127,15 @@ export default {
           //新请求的数据添加到原来数据
           goods[currentType.value].list.push(...result.goods.data);
           //页数+1
-          goods[currentType.value].page ++;
+          goods[currentType.value].page++;
           //完成下拉动作
           bs.finishPullUp();
           //重新计算
           bs.refresh();
-      },80))
+        }, 80)
+      );
     });
-    
+
     watchEffect(() => {
       nextTick(() => {
         // 重新计算高度
@@ -137,8 +145,8 @@ export default {
       });
     });
     /* 自定义事件-回到顶部 */
-    function toTopFn(delay){
-      bs.scrollTo(0,0,delay);
+    function toTopFn(delay) {
+      bs.scrollTo(0, 0, delay);
     }
     /* 自定义事件-TableControl栏目发生改变的时候 */
     function indexChange(newIndex) {
@@ -162,7 +170,8 @@ export default {
       goods,
       isShow,
       currentIndex,
-      toTopFn
+      toTopFn,
+      swiperData,
     };
   },
 };
@@ -172,6 +181,7 @@ export default {
 #home {
   position: relative;
   height: 100vh;
+  width: 100vw;
   .home-wrapper {
     position: absolute;
     //隔开底部
@@ -184,7 +194,7 @@ export default {
     .home-content {
       position: absolute;
     }
-    .slide {
+    .slideOne {
       /* 隔开顶部的navbar */
       margin-top: 45px;
       width: 100%;

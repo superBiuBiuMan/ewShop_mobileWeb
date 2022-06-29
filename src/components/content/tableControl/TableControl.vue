@@ -45,6 +45,7 @@ export default {
 .table-control {
   display: flex;
   height: 40px;
+  width: 100vw;
   line-height: 40px;
   text-align: center;
   font-size: 14px;

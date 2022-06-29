@@ -2,11 +2,10 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import {Button} from 'vant';
-
-
+import { Swipe, SwipeItem } from 'vant'
 createApp(App)
-.use(Button)
+.use(Swipe)
+.use(SwipeItem)
 .use(store)
 .use(router)
 .mount('#app');

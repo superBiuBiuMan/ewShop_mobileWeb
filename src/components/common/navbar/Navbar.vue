@@ -34,6 +34,7 @@ export default {
 <style lang="less" scoped>
 .navbar-content {
   background-color: #4bae81;
+  width: 100vw;
   height: 45px;
   line-height: 45px;
   text-align: center;

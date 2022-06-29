@@ -34,6 +34,8 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  // width: 100%;
+  width: 100vw;
   // padding-bottom: 60px;
 }
 </style>
