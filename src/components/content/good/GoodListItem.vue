@@ -1,7 +1,7 @@
 <template>
   <div class="good-list-item">
     <div class="list-pic">
-      <img :src="itemData.cover_url" />
+      <img v-lazy="itemData.cover_url" />
     </div>
     <div class="good-info">
       <!-- 书名 -->

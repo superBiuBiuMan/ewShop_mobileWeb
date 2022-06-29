@@ -7,7 +7,7 @@
       @click.prevent="viewDetail(item.id)"
       class="banner-item"
     >
-      <img :src="item.cover_url" :alt="item.description" />
+      <img v-lazy="item.cover_url" :alt="item.description" />
       <div class="title">{{item.title}}</div>
     </a>
   </div>

@@ -1,6 +1,6 @@
 <template>
-  <div class="swiper-show">
-    <van-swipe  :autoplay="3000" indicator-color="white">
+  <div class="swiper-show" >
+    <van-swipe v-if="swiperData.length" :autoplay="3000" indicator-color="skyblue">
       <van-swipe-item v-for="item in swiperData" :key="item.id">
         <img :src="item.img_url" :alt="item.title" />
       </van-swipe-item>
