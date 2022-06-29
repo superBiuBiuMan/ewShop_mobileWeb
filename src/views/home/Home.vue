@@ -1,5 +1,5 @@
 <template>
- 
+  
   <div id="home">
     <Navbar>
       <template #default> 图书兄弟 </template>
