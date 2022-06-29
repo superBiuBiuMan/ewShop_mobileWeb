@@ -1,0 +1,73 @@
+<template>
+  <nav>
+    <router-link to="/" class="tab-bar-item">
+      <div><i class="iconfont icon-shouyefill"></i></div>
+      <div>首页</div>
+    </router-link>
+
+    <router-link to="/category" class="tab-bar-item">
+      <div><i class="iconfont icon-yingyong"></i></div>
+      <div>分类</div>
+    </router-link>
+
+    <router-link to="/shopcart" class="tab-bar-item">
+      <div><i class="iconfont icon-gouwuchekong"></i></div>
+      <div>购物车</div>
+    </router-link>
+
+    <router-link to="/user" class="tab-bar-item">
+      <div><i class="iconfont icon-wode-wode"></i></div>
+      <div>我的</div>
+    </router-link>
+  </nav>
+
+  <router-view />
+</template>
+
+<style lang="less">
+/* 引入默认样式 ,注意要使用@import,这样子全部都可以应用到这个样式 */
+@import "./assets/css/base.css";
+@import "./assets/css/iconfont.css";
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+nav {
+  // padding: 30px;
+  display: flex;
+  justify-content: space-around;
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eeeeee;
+  box-shadow: 0 3px 1px 5px rgba(0,0,0,0.1);
+  .tab-bar-item{
+    // 字体图标
+    font-size: var(--font-size);
+    height: 50px;
+    text-align: center;
+    
+    div:first-child{
+      margin-top: 4px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    div:last-child{
+      margin-top: 4px;
+    }
+  }
+  a {
+    color: var(--color-text);
+    font-size: var(--font-size);
+    &.router-link-exact-active {
+      color: var(--color-hight-text);
+    }
+  }
+}
+</style>

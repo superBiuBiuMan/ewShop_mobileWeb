@@ -1,0 +1,50 @@
+/* 使用@import来引入,方便全局可以使用 */
+@import "./normalize.css";
+
+/* css自定义属性,格式为--开头,一般在:root伪类上进行定义 */
+:root {
+    /* 文本颜色 */
+    --color-text: #666;
+    /* 文本高亮时候的颜色 */
+    --color-hight-text: #42bBaa;
+    /* 背景颜色 */
+    --color-background: #FFF;
+    /* 字体大小 */
+    --font-size: 14px;
+    /* 行高 */
+    --line-hight: 1.5;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    /* 禁止用户选中文本或者图片复制 */
+    user-select: none;
+    /* 通过var来使用css自定义属性 */
+    background: var(--color-background);
+    /* 设置body,html的宽度,占据当前视口的百分之百 */
+    /* vw代表当前视口的宽度,由于高度不固定,但是宽度固定,使用设置vw,而不设置vh */
+    width: 100vw;
+}
+
+a{
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+/* 浮动类 - left */
+.left{
+    float: left;
+}
+
+/* 浮动类 - right */
+.right{
+    float:right;
+}
