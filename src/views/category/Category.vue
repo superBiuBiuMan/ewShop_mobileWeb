@@ -10,7 +10,7 @@
       <div class="left-list">
         <div class="left-item-content">
           <!-- v-model="activeNames" -->
-          <van-collapse v-model="activeNames" accordion>
+          <van-collapse v-model="activeName" accordion>
             <!-- title为一级列表的展示名  -->
             <van-collapse-item
               v-for="(firstLevel, index) in categoryList"
@@ -19,7 +19,7 @@
               :name="firstLevel.name"
             >
               <!-- 二级列表 -->
-              <van-sidebar v-model="active">
+              <van-sidebar v-model="activeSecond">
                 <van-sidebar-item
                   v-for="(secondLevel,index) in firstLevel.children"
                   :key="secondLevel.id"
@@ -47,8 +47,8 @@ export default {
   },
   setup() {
     //左分类默认项
-    const active = ref(0);
-    const activeNames = ref(["前端"]);
+    const activeSecond = ref(0);//二级分类列表目前活动项
+    const activeName = ref();//一级分类列表的活动项记录
 
     const categoryList = ref([]);
     onMounted(async () => {
@@ -57,8 +57,8 @@ export default {
       categoryList.value = result.categories;
     });
     return {
-      active,
-      activeNames,
+      activeSecond,
+      activeName,
       categoryList,
     };
   },
