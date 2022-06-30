@@ -49,6 +49,7 @@
             :num="item.comments_count"
             :tag="item.comments_count > 0 ? '流行' : '热销'"
             :thumb="item.cover_url"
+            @click="viewDetail(item.id)"
             :lazy-load="true"
           />
         </div>
@@ -60,8 +61,16 @@
 
 <script>
 import Navbar from "@/components/common/navbar/Navbar";
-import { ref, onMounted, reactive, computed, watch, nextTick } from "vue";
+import {
+  ref,
+  onMounted,
+  reactive,
+  computed,
+  watch,
+  nextTick,
+} from "vue";
 import { reqCategory, reqCategoryGoods } from "@/api/category";
+import {useRouter} from "vue-router";
 import ToTop from "@/components/common/toTop/ToTop";
 /* 第三方插件 */
 import BetterScroll from "better-scroll";
@@ -70,6 +79,7 @@ export default {
   name: "Category",
   components: {
     Navbar,
+    ToTop,
   },
   setup() {
     //左分类默认项
@@ -80,7 +90,14 @@ export default {
     const currentType = ref("sales"); //当前商品默认展示排序方式
     const currentCid = ref(0); //当前商品的二级分类id
     let bs = reactive({}); //better-scroll
-    let isShow = ref(false);//控制回到顶部的显示/隐藏
+    let isShow = ref(false); //控制回到顶部的显示/隐藏
+    const $router = useRouter(); //获取路由
+
+    //商品被单击,跳转到查看详情页
+    function viewDetail(id) {
+      $router.push({ path: "/detail", query: { id } });
+    }
+
     //回到顶部
     function toTopFn(delay) {
       bs.scrollTo(0, 0, delay);
@@ -102,6 +119,7 @@ export default {
       price: { page: 1, list: [] },
       comments_count: { page: 1, list: [] },
     });
+
     /* nav选项被单击回调,结构出排序类别 */
     function onClickTab({ name }) {
       // 原始输出
@@ -159,18 +177,14 @@ export default {
         });
       });
     }
-    /* 初始化请求数据函数 */
-    // async function reqInit(){
-
-    // }
     onMounted(() => {
-      reqCategory().then(result=>{
-         //保存存储数据
+      reqCategory().then((result) => {
+        //保存存储数据
         categoryList.value = result.categories;
         //保存默认数据
         goods.sales.list = result.goods.data;
-      })
-      
+      });
+
       bs = new BetterScroll(".show-list", {
         //允许单击滚动列表的元素
         click: true,
@@ -192,10 +206,12 @@ export default {
           //1.页码+1
           let page = goods[currentType.value].page++;
           //2.发送数据
-          reqCategoryGoods(currentType.value, currentCid.value,page).then(response=>{
-            //3.添加到原来数据
-            goods[currentType.value].list.push(...response.goods.data);
-          })
+          reqCategoryGoods(currentType.value, currentCid.value, page).then(
+            (response) => {
+              //3.添加到原来数据
+              goods[currentType.value].list.push(...response.goods.data);
+            }
+          );
           //4.完成上划动作
           bs.finishPullUp();
           //5.重新计算高度
@@ -209,6 +225,7 @@ export default {
         bs.refresh();
       });
     });
+
     return {
       activeSecond,
       activeName,
@@ -220,7 +237,8 @@ export default {
       bs,
       goods,
       toTopFn,
-      isShow
+      isShow,
+      viewDetail,
     };
   },
 };

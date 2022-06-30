@@ -5,6 +5,7 @@
         v-for="item in showData"
         :key="item.id"
         :itemData="item"
+        @click="viewDetail(item.id)"
       >
       </GoodListItem>
     </div>
@@ -13,6 +14,7 @@
 
 <script>
 import GoodListItem from "@/components/content/good/GoodListItem";
+import { useRouter } from 'vue-router';
 export default {
   name: "GoodList",
   props: {
@@ -26,6 +28,16 @@ export default {
   components: {
     GoodListItem,
   },
+  setup(){
+    const $router = useRouter();
+     /* 跳转到查看详情页 */
+    function viewDetail(id) {
+      $router.push({ path: "/detail", query: { id } });
+    }
+    return {
+      viewDetail
+    }
+  }
 };
 </script>
 

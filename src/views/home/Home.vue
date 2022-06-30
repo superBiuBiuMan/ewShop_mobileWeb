@@ -176,7 +176,6 @@ export default {
       currentIndex,
       toTopFn,
       swiperData,
-      //后期添加的
       bs,
     };
   },
