@@ -14,7 +14,7 @@
       <!-- 内容区 -->
       <div class="home-content">
         <!-- 轮播图 -->
-        
+
         <SwiperShow :swiperData="swiperData"></SwiperShow>
         <!-- banner  -->
         <Banner :bannerData="goods.sales.list"></Banner>
@@ -87,27 +87,35 @@ export default {
     /* 变量-better-scroll示例对象 */
     let bs = reactive({});
 
-    onMounted(async () => {
+    onMounted(() => {
       //距离顶部的距离和加上自己的宽度
+
       /* 请求-获取畅销书籍*/
-      let salesData = await reqIndex();
-      goods.sales.list = salesData.goods.data;
-      //轮播图数据
-      swiperData.value = salesData.slides;
+      reqIndex().then((salesData) => {
+        goods.sales.list = salesData.goods.data;
+        //轮播图数据
+        swiperData.value = salesData.slides;
+      });
+
       /* 请求-获取推荐书籍*/
-      let recommendData = await reqProgram("recommend");
-      goods.recommend.list = recommendData.goods.data;
+      reqProgram("recommend").then((recommendData) => {
+        goods.recommend.list = recommendData.goods.data;
+      });
+
       /* 请求-获取精选书籍 */
-      let newData = await reqProgram("new");
-      goods.new.list = newData.goods.data;
+      reqProgram("new").then((newData) => {
+        goods.new.list = newData.goods.data;
+      });
+
+      let abc = document.querySelector(".table-panel").getBoundingClientRect();
       // 创建BetterScroll对象
       bs = new BetterScroll(document.querySelector(".home-wrapper"), {
         probeType: 3,
         click: true,
         pullUpLoad: true,
       });
-      let abc = document.querySelector(".table-panel").getBoundingClientRect();
-      //添加滚动事件,使用下节流阀
+
+      // //添加滚动事件,使用下节流阀
       bs.on(
         "scroll",
         throttle((position) => {
@@ -115,25 +123,23 @@ export default {
           isShow.value = -position.y > abc.top - abc.height - 5;
         }, 100)
       );
-
-      //添加滚动到底部事件
       bs.on(
         "pullingUp",
-        throttle(async () => {
+        throttle(() => {
           console.log("到底部了");
           //发送ajax请求获取新页
           const page = goods[currentType.value].page + 1;
-          let result = await reqProgram(currentType.value, page);
-          //新请求的数据添加到原来数据
-          goods[currentType.value].list.push(...result.goods.data);
-          //页数+1
-          goods[currentType.value].page++;
+
+          reqProgram(currentType.value, page).then((response) => {
+            //新请求的数据添加到原来数据
+            goods[currentType.value].list.push(...response.goods.data);
+            //页数+1
+            goods[currentType.value].page++;
+          });
+
           //完成上划动作
           bs.finishPullUp();
-          //重新计算
-          nextTick(()=>{
-            bs.refresh();
-          })
+          bs.refresh();
         }, 80)
       );
     });
@@ -141,9 +147,7 @@ export default {
     watchEffect(() => {
       nextTick(() => {
         // 重新计算高度
-        if (Object.keys(bs).length != 0) {
-          bs && bs.refresh();
-        }
+        Object.keys(bs).length > 0 ? bs.refresh() : "";
       });
     });
     /* 自定义事件-回到顶部 */
@@ -160,9 +164,7 @@ export default {
       // });
       nextTick(() => {
         // 重新计算高度
-        if (Object.keys(bs).length != 0) {
-          bs && bs.refresh();
-        }
+        bs && bs.refresh();
       });
     }
 
@@ -175,7 +177,7 @@ export default {
       toTopFn,
       swiperData,
       //后期添加的
-      bs
+      bs,
     };
   },
 };

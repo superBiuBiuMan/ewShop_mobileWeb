@@ -163,12 +163,14 @@ export default {
     // async function reqInit(){
 
     // }
-    onMounted(async () => {
-      let result = await reqCategory();
-      //保存存储数据
-      categoryList.value = result.categories;
-      //保存默认数据
-      goods.sales.list = result.goods.data;
+    onMounted(() => {
+      reqCategory().then(result=>{
+         //保存存储数据
+        categoryList.value = result.categories;
+        //保存默认数据
+        goods.sales.list = result.goods.data;
+      })
+      
       bs = new BetterScroll(".show-list", {
         //允许单击滚动列表的元素
         click: true,
@@ -185,14 +187,15 @@ export default {
       );
       bs.on(
         "pullingUp",
-        throttle(async () => {
+        throttle(() => {
           console.log("到底部了");
           //1.页码+1
-          goods[currentType.value].page++;
+          let page = goods[currentType.value].page++;
           //2.发送数据
-          let response = await reqCategoryGoods(currentType.value, currentCid.value);
-           //3.添加到原来数据
-          goods[currentType.value].list.push(...response.goods.data);
+          reqCategoryGoods(currentType.value, currentCid.value,page).then(response=>{
+            //3.添加到原来数据
+            goods[currentType.value].list.push(...response.goods.data);
+          })
           //4.完成上划动作
           bs.finishPullUp();
           //5.重新计算高度
@@ -260,6 +263,7 @@ export default {
     height: 100%;
     box-sizing: border-box;
     padding: 10px;
+    bottom: 0;
   }
 }
 //重新定义侧边导航样式
