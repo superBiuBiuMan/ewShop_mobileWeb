@@ -128,10 +128,12 @@ export default {
           goods[currentType.value].list.push(...result.goods.data);
           //页数+1
           goods[currentType.value].page++;
-          //完成下拉动作
+          //完成上划动作
           bs.finishPullUp();
           //重新计算
-          bs.refresh();
+          nextTick(()=>{
+            bs.refresh();
+          })
         }, 80)
       );
     });
@@ -172,6 +174,8 @@ export default {
       currentIndex,
       toTopFn,
       swiperData,
+      //后期添加的
+      bs
     };
   },
 };

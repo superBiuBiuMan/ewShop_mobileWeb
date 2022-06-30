@@ -39,26 +39,33 @@
       </div>
       <!-- 书籍展示 -->
       <div class="show-list">
-        <van-card
-          v-for="(item) in showGood"
-          :key="item.id"
-          :title="item.title"
-          :price="item.price"
-          :origin-price="Math.floor(item.price*0.8)"
-          :num="item.comments_count	"
-          :tag="item.comments_count>=0?'流行':'热销'"
-          :thumb="item.cover_url"
-          :lazy-load="true"
-        />
+        <div class="show-content">
+          <van-card
+            v-for="item in showGood"
+            :key="item.id"
+            :title="item.title"
+            :price="item.price"
+            :origin-price="Math.floor(item.price * 0.8)"
+            :num="item.comments_count"
+            :tag="item.comments_count > 0 ? '流行' : '热销'"
+            :thumb="item.cover_url"
+            :lazy-load="true"
+          />
+        </div>
       </div>
     </div>
+    <ToTop v-show="isShow" @toTopFn="toTopFn"></ToTop>
   </div>
 </template>
 
 <script>
 import Navbar from "@/components/common/navbar/Navbar";
-import { ref, onMounted ,reactive,computed, watch} from "vue";
-import { reqCategory,reqCategoryGoods, } from "@/api/category";
+import { ref, onMounted, reactive, computed, watch, nextTick } from "vue";
+import { reqCategory, reqCategoryGoods } from "@/api/category";
+import ToTop from "@/components/common/toTop/ToTop";
+/* 第三方插件 */
+import BetterScroll from "better-scroll";
+import throttle from "lodash/throttle";
 export default {
   name: "Category",
   components: {
@@ -70,53 +77,91 @@ export default {
     const activeName = ref(); //一级分类列表的活动项记录
     const activeTab = ref(0); //nav的选中项记录
     const categoryList = ref([]); //左侧分类列表
-    const currentType = ref('sales');//当前商品默认展示排序方式
-    const currentCid = ref(0);//当前商品的二级分类id
+    const currentType = ref("sales"); //当前商品默认展示排序方式
+    const currentCid = ref(0); //当前商品的二级分类id
+    let bs = reactive({}); //better-scroll
+    let isShow = ref(false);//控制回到顶部的显示/隐藏
+    //回到顶部
+    function toTopFn(delay) {
+      bs.scrollTo(0, 0, delay);
+    }
 
     //展示的数据项
     const showGood = computed({
-      get(){
+      get() {
         return goods[currentType.value].list;
       },
-      set(newValue){
+      set(newValue) {
         goods[currentType.value].list = newValue;
-      }
-    })
+      },
+    });
 
     //存储请求获取到的数据
     const goods = reactive({
-      sales:{page:1,list:[]},
-      price:{page:1,list:[]},
-      comments_count:{page:1,list:[]},
-    })
-    /* nva选项被单击回调,结构出排序类别 */
+      sales: { page: 1, list: [] },
+      price: { page: 1, list: [] },
+      comments_count: { page: 1, list: [] },
+    });
+    /* nav选项被单击回调,结构出排序类别 */
     function onClickTab({ name }) {
       // 原始输出
       // {name: 'price', title: '价格排序', event: PointerEvent, disabled: false}
       console.log("nav选项被单击", name);
       //更改类别
       currentType.value = name;
-    } 
+      //1.如果当前类别数据已经有了,就不再次请求数据了
+      if (goods[currentType.value].list.length != 0) {
+        return;
+      }
+      showGood.value = [];
+      //2.否者的话数据请求
+      reqCategoryGoods(currentType.value, currentCid.value).then((response) => {
+        goods[currentType.value].list = response.goods.data;
+        //重新计算高度
+        nextTick(() => {
+          bs.refresh();
+        });
+      });
+    }
 
     /* 监视左侧二级列表和排序方式的变化 */
-    watch([currentType,currentCid],async ()=>{  
-        console.log('监视左侧二级列表或排序方式被改变了');
-        //清空原来数据
-        showGood.value = [];
-        //重新发送请求
-        let result = await reqCategoryGoods(currentType.value,currentCid.value);
-        goods[currentType.value].list = result.goods.data;
-    })
+    // watch([currentType, currentCid], async (oldValue, newValue) => {
+    // console.log('监视左侧二级列表或排序方式被改变了');
+    //清空原来数据
+    // showGood.value = [];
+    //重新发送请求
+    // if(oldValue[1] == newValue[1]){
+    //   return;
+    // }
+    // let result = await reqCategoryGoods(currentType.value,currentCid.value);
+    // goods[currentType.value].list = result.goods.data;
+    // });
 
     // 左侧列表里面的二级选项被单击
     function getGoods(id) {
       console.log("左侧列表里面的二级选项被单击", id);
       //更新二级分类id记录值
       currentCid.value = id;
+      //清空所有列表的数据
+      Object.keys(goods).forEach((key) => {
+        //数据清空
+        goods[key].list = [];
+        // 页码清零
+        goods[key].page = 1;
+      });
+      showGood.value = [];
+      // 重新发送请求
+      reqCategoryGoods(currentType.value, currentCid.value).then((response) => {
+        goods[currentType.value].list = response.goods.data;
+        //重新计算高度
+        nextTick(() => {
+          bs.refresh();
+        });
+      });
     }
     /* 初始化请求数据函数 */
     // async function reqInit(){
-      
+
     // }
     onMounted(async () => {
       let result = await reqCategory();
@@ -124,6 +169,42 @@ export default {
       categoryList.value = result.categories;
       //保存默认数据
       goods.sales.list = result.goods.data;
+      bs = new BetterScroll(".show-list", {
+        //允许单击滚动列表的元素
+        click: true,
+        probeType: 3,
+        pullUpLoad: TextTrackCueList,
+      });
+      //添加滚动事件,使用下节流阀
+      bs.on(
+        "scroll",
+        throttle((position) => {
+          //滚动的距离大于了TableControl组件初始化时候到顶部的距离 - TableControl的高度的时候,就显示另外一个
+          isShow.value = -position.y > 300;
+        }, 100)
+      );
+      bs.on(
+        "pullingUp",
+        throttle(async () => {
+          console.log("到底部了");
+          //1.页码+1
+          goods[currentType.value].page++;
+          //2.发送数据
+          let response = await reqCategoryGoods(currentType.value, currentCid.value);
+           //3.添加到原来数据
+          goods[currentType.value].list.push(...response.goods.data);
+          //4.完成上划动作
+          bs.finishPullUp();
+          //5.重新计算高度
+          nextTick(() => {
+            bs.refresh();
+          });
+        }),
+        20
+      );
+      nextTick(() => {
+        bs.refresh();
+      });
     });
     return {
       activeSecond,
@@ -132,7 +213,11 @@ export default {
       activeTab,
       onClickTab,
       getGoods,
-      showGood
+      showGood,
+      bs,
+      goods,
+      toTopFn,
+      isShow
     };
   },
 };
