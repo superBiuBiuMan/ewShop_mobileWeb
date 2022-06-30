@@ -1,5 +1,9 @@
-const { defineConfig } = require('@vue/cli-service');
-const { VantResolver } = require('unplugin-vue-components/resolvers');
+const {
+  defineConfig
+} = require('@vue/cli-service');
+const {
+  VantResolver
+} = require('unplugin-vue-components/resolvers');
 const ComponentsPlugin = require('unplugin-vue-components/webpack');
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -9,5 +13,11 @@ module.exports = defineConfig({
         resolvers: [VantResolver()],
       }),
     ],
+    resolve: {
+      //设置别名
+      alias: {
+        'assets': '@/assets',
+      }
+    }
   },
 })

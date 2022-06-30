@@ -7,7 +7,9 @@ const Home = ()=>import("@/views/home/Home");
 const ShopCart = ()=>import("@/views/shopcart/ShopCart");
 const Category = ()=>import("@/views/category/Category");
 const User = ()=>import("@/views/user/User");
-const Detail = ()=>import("@/views/detail/Detail.vue");
+const Detail = ()=>import("@/views/detail/Detail");
+const Register = ()=>import("@/views/user/Register");
+// meta为定义window.title的属性所用
 const routes = [{
     path: "/home",
     name: "home",
@@ -46,6 +48,14 @@ const routes = [{
     component:Detail,
     meta:{
       title:"图书兄弟-详细信息"
+    }
+  },
+  {
+    path:"/register",
+    name:"register",
+    component:Register,
+    meta:{
+      title:"图书兄弟-用户注册"
     }
   },
   //重定向

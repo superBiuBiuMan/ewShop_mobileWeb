@@ -57,9 +57,8 @@
 import Navbar from "@/components/common/navbar/Navbar";
 import GoodList from '@/components/content/good/GoodList'
 import { useRoute } from "vue-router";
-import { onMounted, ref, reactive, toRefs, nextTick } from "vue";
+import { onMounted, ref, reactive, toRefs} from "vue";
 import { reqGoodDetail } from "@/api/detail";
-import ToTop from '@/components/common/toTop/ToTop.vue';
 export default {
   name: "Detail",
   components: {
