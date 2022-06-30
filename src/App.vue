@@ -65,7 +65,7 @@ nav {
     font-size: var(--font-size);
     height: 50px;
     text-align: center;
-
+    
     div:first-child {
       margin-top: 4px;
       display: inline-block;

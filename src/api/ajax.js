@@ -3,7 +3,7 @@ import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 const service = axios.create({
     baseURL: 'https://api.shop.eduwork.cn',
-    timeout: 2000
+    timeout: 20000
 })
 
 //设置请求拦截器
