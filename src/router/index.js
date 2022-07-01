@@ -9,6 +9,7 @@ const Category = ()=>import("@/views/category/Category");
 const User = ()=>import("@/views/user/User");
 const Detail = ()=>import("@/views/detail/Detail");
 const Register = ()=>import("@/views/user/Register");
+const Login = ()=>import("@/views/user/Login");
 // meta为定义window.title的属性所用
 const routes = [{
     path: "/home",
@@ -56,6 +57,14 @@ const routes = [{
     component:Register,
     meta:{
       title:"图书兄弟-用户注册"
+    }
+  },
+  {
+    path:"/login",
+    name:"login",
+    component:Login,
+    meta:{
+      title:"图书兄弟-用户登录"
     }
   },
   //重定向

@@ -1,33 +1,34 @@
 <template>
-  <div class="register">
+  <div class="login">
     <Navbar>
-      <template #default> 用户注册 </template>
+      <template #default> 用户登录 </template>
     </Navbar>
-    <div class="register-content">
+    <div class="login-content">
       <!-- logo展示 -->
-      <div class="register-logo">
+      <div class="login-logo">
         <van-image
           width="10rem"
           height="10rem"
           src="https://dreamlove.top/img/favicon.png"
         />
       </div>
-      <!-- 注册表单 -->
-      <div class="register-form">
+      <!-- 登录表单 -->
+      <div class="login-form">
         <van-form @submit="onSubmit">
           <!-- 输入项目 -->
           <van-cell-group inset>
-              <!-- 用户名  -->
-            <van-field
-              v-model="name"
+             <!-- 邮件 -->
+               <van-field
               autocomplete
+              v-model="email"
+              type="text"
+              label="电子邮箱"
               name="pattern"
-              label="用户名"
-              placeholder="用户名"
+              placeholder="请输入邮件"
               :rules="[
-              {required:true,message:'请输入用户名'},
-              { pattern:userNameReg,required: true, message: '用户名至少为6个字符' }
-              ]"/>
+              { required: true, message: '请填写您的邮箱' },
+              { pattern: emailReg, message: '邮箱格式错误'}]" />
+            
             <!-- 密码 -->
             <van-field
               v-model="password"
@@ -40,33 +41,14 @@
                 {required: true,message:'请输入密码'},
                 {pattern:passworReg,message:'密码至少为6个字符'}
               ]" />
-            <!-- 确认密码 -->
-             <van-field
-              v-model="password_confirmation"
-              autocomplete
-              type="password"
-              name="validator"
-              label="确认密码"
-              placeholder="请再次输入密码"
-              :rules="[{ validator:validatorFnAgain ,required: true }]" />
-              <!-- 邮件 -->
-               <van-field
-              autocomplete
-              v-model="email"
-              type="text"
-              label="电子邮箱"
-              name="pattern"
-              placeholder="请输入邮件"
-              :rules="[
-              { required: true, message: '请填写您的邮箱' },
-              { pattern: emailReg, message: '邮箱格式错误'}]" />
+             
           </van-cell-group>
           
-          <router-link to="/login" class="account-created">已有账号?立即登录</router-link>
+          <router-link to="/register" class="account-create">立即注册</router-link>
           <!-- 提交按钮 -->
           <div style="margin: 16px">
             <van-button round block type="primary" native-type="submit">
-              提交
+              登录
             </van-button>
           </div>
         </van-form>
@@ -79,22 +61,18 @@
 
 <script>
 import {reactive,toRefs} from "vue";
-import {reqRegister} from "@/api/user";
 import {Toast} from "vant";
+import {reqLogin} from "@/api/user";
 export default {
-  name: "Register",
+  name: "login",
   setup(){
-    /* 存储用户注册信息 */
+    /* 存储用户登录输入信息 */
     const userInfo = reactive({
-        name:"",
         email:"",
         password:"",
-        password_confirmation:""
     });
     /* 正则验证规则 */
     const regCheck = {
-        //用户名至少为6位
-        userNameReg:/.{6,}/,
         //邮箱正则
         emailReg:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
         //密码正则
@@ -104,15 +82,16 @@ export default {
     function onSubmit(){
       //显示提示
       Toast.loading({
-        message:"注册中...",
+        message:"登录中...",
         forbidClick:true,
       });
-      reqRegister(userInfo).then(response=>{
+      //登录提交
+      reqLogin(userInfo).then(response=>{
         //关闭提示
         Toast.clear();
         console.log(response);
         //提示成功,失败会在拦截器中捕获的
-        Toast.success("注册成功...");
+        Toast.success("登录成功...");
         //跳转到位置
       }).catch(reason=>{
          //关闭提示
@@ -120,29 +99,23 @@ export default {
       })
     }
 
-    /* 验证器验证第二次密码 */
-    function validatorFnAgain(){
-        if(userInfo.password !=userInfo.password_confirmation){
-            return "二次输入的密码不正确!"
-        }
-    }
+    
     return {
         ...toRefs(userInfo),
         onSubmit,
         ...regCheck,
-        validatorFnAgain,
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.register {
+.login {
   margin-top: 45px;
-  .register-logo{
+  .login-logo{
       margin-top: 15+45px;
   }
-  .register-form{
+  .login-form{
       margin-top: 15px;
   }
   .van-button--primary{
@@ -150,7 +123,7 @@ export default {
     border-color: #4bae81;
   }
   //已有账号
-  .account-created{
+  .account-create{
     color: #017eff;
     font-size: 14px;
     float: left;
