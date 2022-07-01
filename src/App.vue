@@ -62,7 +62,7 @@ nav {
   box-shadow: 0 3px 1px 5px rgba(0, 0, 0, 0.1);
   .tab-bar-item {
     // 字体图标
-    font-size: var(--font-size);
+    font-size: var(--font-size-self);
     height: 50px;
     text-align: center;
     
@@ -77,7 +77,7 @@ nav {
   }
   a {
     color: var(--color-text);
-    font-size: var(--font-size);
+    font-size: var(--font-size-self);
     &.router-link-exact-active {
       color: var(--color-hight-text);
     }

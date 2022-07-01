@@ -59,7 +59,6 @@ export default {
     //设置增长系数为1
     flex: 1;
     color: white;
-    font-size: --font-size;
   }
 }
 </style>

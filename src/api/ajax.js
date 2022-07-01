@@ -1,5 +1,6 @@
 import axios from "axios";
 import nprogress from "nprogress";
+import {Toast,Notify} from "vant";
 import "nprogress/nprogress.css";
 const service = axios.create({
     baseURL: 'https://api.shop.eduwork.cn',
@@ -7,25 +8,25 @@ const service = axios.create({
 })
 
 //设置请求拦截器
-service.interceptors.request.use((config)=>{
+service.interceptors.request.use((config) => {
     nprogress.start();
     return config;
-},(error)=>{
+}, (error) => {
 
 })
 
 //设置响应拦截器
 service.interceptors.response.use(
-    (response)=>{
+    (response) => {
         nprogress.done();
-        
         //返回数据
         return response.data;
     },
-    (error)=>{
+    (error) => {
         nprogress.done();
-        //返回错误,这里没有进行处理
-        return error;
+
+        Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
+        throw new Error(error);
     }
 )
 

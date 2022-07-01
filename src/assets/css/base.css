@@ -10,9 +10,13 @@
     /* 背景颜色 */
     --color-background: #FFF;
     /* 字体大小 */
-    --font-size: 14px;
+    --font-size-self: 14px;
     /* 行高 */
     --line-hight: 1.5;
+    /* 覆盖顶部框设置notify的提示高度 */
+    --van-notify-padding:14px!important;
+    /* 设置toast提示的字体大小 */
+    --van-toast-font-size:16px!important;
 }
 
 *,
@@ -47,4 +51,8 @@ a{
 /* 浮动类 - right */
 .right{
     float:right;
+}
+/* 重新定义toast轻提示的大小,我这里莫名其妙比较小 */
+.van-icon-success:before {
+    font-size: 36px!important;
 }
