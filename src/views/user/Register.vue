@@ -81,22 +81,24 @@
 import {reactive,toRefs} from "vue";
 import {reqRegister} from "@/api/user";
 import {Toast} from "vant";
+import {useRouter} from "vue-router";
 export default {
   name: "Register",
   setup(){
+    const $router = useRouter();
     /* 存储用户注册信息 */
     const userInfo = reactive({
-        name:"",
-        email:"",
-        password:"",
-        password_confirmation:""
+        name:"jioajfioawf",
+        email:"252j0ioaw@qq.com",
+        password:"123456789",
+        password_confirmation:"123456789"
     });
     /* 正则验证规则 */
     const regCheck = {
         //用户名至少为6位
         userNameReg:/.{6,}/,
         //邮箱正则
-        emailReg:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
+        emailReg:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/i,
         //密码正则
         passworReg:/.{6,}/,
     }
@@ -110,11 +112,21 @@ export default {
       reqRegister(userInfo).then(response=>{
         //关闭提示
         Toast.clear();
-        console.log(response);
         //提示成功,失败会在拦截器中捕获的
-        Toast.success("注册成功...");
-        //跳转到位置
+        Toast.success("注册成功...正在跳转");
+        //跳转到位置并传递参数给Login
+        //这里没有加密和应该也不应该这种方式传递的....
+        $router.push({path:"/login",query:{
+          email:userInfo.email,
+          password:userInfo.password,
+        }});
+        //清空数据
+        userInfo.name="";
+        userInfo.email="";
+        userInfo.password="";
+        userInfo.password_confirmation="";
       }).catch(reason=>{
+        console.log("注册失败");
          //关闭提示
         Toast.clear();
       })

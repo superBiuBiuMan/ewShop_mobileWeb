@@ -1,6 +1,9 @@
 import axios from "axios";
 import nprogress from "nprogress";
-import {Toast,Notify} from "vant";
+import {
+    Toast,
+    Notify
+} from "vant";
 import "nprogress/nprogress.css";
 const service = axios.create({
     baseURL: 'https://api.shop.eduwork.cn',
@@ -24,9 +27,11 @@ service.interceptors.response.use(
     },
     (error) => {
         nprogress.done();
-
-        Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
-        throw new Error(error);
+        if (Object.keys(error.response.data.errors)[0]) {
+            Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
+        }
+        // throw new Error(error);
+        return Promise.reject(error);
     }
 )
 

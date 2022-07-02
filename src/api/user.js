@@ -23,6 +23,6 @@ export function reqLogin(data) {
     return ajax({
         url: '/api/auth/login',
         method: 'post',
-        data
+        data,
     })
 }

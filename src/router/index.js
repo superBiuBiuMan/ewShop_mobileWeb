@@ -41,6 +41,9 @@ const routes = [{
     component: User,
     meta:{
       title:"图书兄弟-个人中心"
+    },
+    beforeEnter: (to, from, next) => {
+      next();
     }
   },
   {
@@ -57,6 +60,9 @@ const routes = [{
     component:Register,
     meta:{
       title:"图书兄弟-用户注册"
+    },
+    beforeEnter: (to, from, next) => {
+      next();
     }
   },
   {
@@ -65,6 +71,9 @@ const routes = [{
     component:Login,
     meta:{
       title:"图书兄弟-用户登录"
+    },
+    beforeEnter: (to, from, next) => {
+      next();
     }
   },
   //重定向

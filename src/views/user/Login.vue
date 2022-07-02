@@ -63,18 +63,38 @@
 import {reactive,toRefs} from "vue";
 import {Toast} from "vant";
 import {reqLogin} from "@/api/user";
+import {useRouter,useRoute} from "vue-router";
+import {useStore} from "vuex";
 export default {
   name: "login",
   setup(){
-    /* 存储用户登录输入信息 */
+    //路由总管
+    const $router = useRouter();
+    //自己的路由信息
+    const $route = useRoute();
+    //store
+    const $store = useStore();
+    console.log($store);
+     /* 存储用户登录输入信息 */
     const userInfo = reactive({
-        email:"",
-        password:"",
+        email:"superBiuBiu@qq.com",
+        password:"123456789",
     });
+    //空对象就算是空的,转化为布尔值也是为真
+    if(Object.keys($route.query).length){
+        //有参数,并且为账号密码
+        if($route.query.email && $route.query.password){
+            userInfo.email = $route.query.email;
+            userInfo.password = $route.query.password;
+            //登录
+            onSubmit();
+        }
+    }
     /* 正则验证规则 */
     const regCheck = {
         //邮箱正则
-        emailReg:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
+        // emailReg:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
+        emailReg:/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/i ,
         //密码正则
         passworReg:/.{6,}/,
     }
@@ -89,13 +109,25 @@ export default {
       reqLogin(userInfo).then(response=>{
         //关闭提示
         Toast.clear();
-        console.log(response);
         //提示成功,失败会在拦截器中捕获的
         Toast.success("登录成功...");
+        //存储数据
+        $store.dispatch("setToken",response.access_token);
+        //存放在localStorage
+        window.localStorage.setItem("EWSHOPAUTHORIZATION",response.access_token);
+        //清空数据
+        userInfo.email = "";
+        userInfo.password="";
         //跳转到位置
+        // setTimeout(() => {
+        //     //返回到之前的位置
+        //     $router 
+        // }, 800);
       }).catch(reason=>{
          //关闭提示
         Toast.clear();
+        console.log("登录失败了");
+        Toast.fail("登录失败,请检查账号密码是否正确!");
       })
     }
 
