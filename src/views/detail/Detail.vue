@@ -28,8 +28,8 @@
             }}</van-tag>
           </template>
           <template #footer>
-            <van-button  color="linear-gradient(#fcd51f, #feba23)">加入购物车</van-button>
-            <van-button  color="linear-gradient(#fe3e4e, #f72e1d)" >立即购买</van-button>
+            <van-button  color="linear-gradient(#fcd51f, #feba23)" @click="addToCart">加入购物车</van-button>
+            <van-button  color="linear-gradient(#fe3e4e, #f72e1d)" @click="shopNow">立即购买</van-button>
           </template>
         </van-card>
       </div>
@@ -59,6 +59,8 @@ import GoodList from '@/components/content/good/GoodList'
 import { useRoute } from "vue-router";
 import { onMounted, ref, reactive, toRefs} from "vue";
 import { reqGoodDetail } from "@/api/detail";
+import {reqAddCart} from "@/api/shopcart";
+import {Toast} from "vant";
 export default {
   name: "Detail",
   components: {
@@ -85,6 +87,27 @@ export default {
         bahavior:'smooth',
       })
     }
+    //添加到购物车
+    function addToCart(){
+      //判断是否有商品id
+      if(!id.value){
+        return;
+      }
+      //有商品id
+      reqAddCart({
+        goods_id:id.value,
+        num:1
+      }).then(res=>{
+        Toast.success("添加购物车成功");
+      }).catch(()=>{
+        Toast.fail("添加购物车失败,请检查网络是否正常");
+      })
+    }
+    //立即购买
+    function shopNow(){
+      //其实应该跳转到结算页面的....
+
+    }
     //记录数据
     onMounted(() => {
       //1.保存传递过来的查询id
@@ -101,6 +124,8 @@ export default {
       ...toRefs(detailInfo),
       active,
       onClickTab,
+      addToCart,
+      shopNow
     };
   },
 };
