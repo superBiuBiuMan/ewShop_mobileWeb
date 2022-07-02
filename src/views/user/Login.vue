@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div id="login">
     <Navbar>
       <template #default> 用户登录 </template>
     </Navbar>
@@ -142,7 +142,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login {
+#login {
   margin-top: 45px;
   .login-logo{
       margin-top: 15+45px;

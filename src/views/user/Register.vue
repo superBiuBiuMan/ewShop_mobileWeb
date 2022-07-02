@@ -1,5 +1,5 @@
 <template>
-  <div class="register">
+  <div id="register">
     <Navbar>
       <template #default> 用户注册 </template>
     </Navbar>
@@ -149,7 +149,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.register {
+#register {
   margin-top: 45px;
   .register-logo{
       margin-top: 15+45px;

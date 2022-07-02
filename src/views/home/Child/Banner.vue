@@ -1,5 +1,5 @@
 <template>
-  <div class="banner">
+  <div id="banner">
     <a
       href="javascript:;"
       v-for="item in bannerData.slice(0, 4)"
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.banner {
+#banner {
   display: flex;
   width: 100vw;
   text-align: center;

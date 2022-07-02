@@ -26,3 +26,20 @@ export function reqLogin(data) {
         data,
     })
 }
+
+/* 退出登录 */
+export function reqLoginOut(){
+    return ajax({
+        url:"/api/auth/logout",
+        method:"post",
+    })
+}
+
+
+/* 获取用户信息 */
+export function reqUserInfo(){
+    return ajax({
+        url:'/api/user',
+        method:"get",
+    })
+}

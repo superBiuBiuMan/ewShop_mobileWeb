@@ -1,5 +1,5 @@
 <template>
-  <div class="shopcart">
+  <div id="shopcart">
     <Navbar>
       <template #default> 购物车 </template>
     </Navbar>
@@ -187,7 +187,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.shopcart {
+#shopcart {
   margin-top: 45px;
   // margin-bottom: 60px;
   .content{
