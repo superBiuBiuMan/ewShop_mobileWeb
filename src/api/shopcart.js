@@ -20,9 +20,10 @@ export function reqAddCart(data) {
 query参数
 include	否	string	包含额外的数据： goods 商品
 */
-export function reqListCart() {
+export function reqListCart(type = 0) {
+    let url = type == 1 ? "/api/carts?include=goods" : "/api/carts";
     return ajax({
-        url: "/api/carts",
+        url,
         method: "get",
     })
 }

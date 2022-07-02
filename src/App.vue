@@ -13,7 +13,7 @@
     <router-link to="/shopcart" class="tab-bar-item">
       <div>
         <!-- 添加徽标 -->
-        <van-badge :content="0" max="9">
+        <van-badge :content="$store.state.user.amountCarts" max="99">
           <i class="iconfont icon-gouwuchekong"></i>
         </van-badge>
       </div>
@@ -37,8 +37,24 @@
   <router-view />
 </template>
 
+<script>
+import {onMounted} from "vue";
+import {useStore} from "vuex";
+export default {
+  name:"App",
+  setup() {
+    const $store = useStore();//获取store仓库对象
+    onMounted(()=>{
+      if($store.state.user.Authorization){
+        //token存在,则获取购物车请求
+        $store.dispatch("setReqCarNum");
+      }
+    });
+  },
+}
+</script>
 <style lang="less">
-/* 引入默认样式 ,注意要使用@import,这样子全部都可以应用到这个样式 */
+/* 引入默认样式 ,这样子全部都可以应用到这个样式 */
 @import "./assets/css/base.css";
 @import "./assets/css/iconfont.css";
 #app {

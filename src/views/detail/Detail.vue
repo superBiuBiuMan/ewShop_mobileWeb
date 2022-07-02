@@ -61,6 +61,7 @@ import { onMounted, ref, reactive, toRefs} from "vue";
 import { reqGoodDetail } from "@/api/detail";
 import {reqAddCart} from "@/api/shopcart";
 import {Toast} from "vant";
+import { useStore } from 'vuex';
 export default {
   name: "Detail",
   components: {
@@ -70,6 +71,8 @@ export default {
   setup() {
     //获取当前路由信息
     const $route = useRoute();
+    //获取存储仓库
+    const $store = useStore();
     const id = ref();
     //记录当前选择项
     const active = ref(0);
@@ -99,6 +102,8 @@ export default {
         num:1
       }).then(res=>{
         Toast.success("添加购物车成功");
+        //购物车数量+1
+        $store.dispatch("setCarNum",1);
       }).catch(()=>{
         Toast.fail("添加购物车失败,请检查网络是否正常");
       })

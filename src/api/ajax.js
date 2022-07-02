@@ -15,8 +15,8 @@ const service = axios.create({
 service.interceptors.request.use((config) => {
     nprogress.start();
     //添加认证信息
-    // const token = $store.state.user.Authorization;//刷新下就没有了,所以还是用window.localStorage吧
-    const token = window.localStorage.getItem('EWSHOPAUTHORIZATION');
+    //注意,vuex刷新下就没有了,除非再次读取
+    const token = $store.state.user.Authorization;//获取token
     if (token) {
         config.headers.Authorization = 'Bearer' + token;
     }
@@ -37,7 +37,7 @@ service.interceptors.response.use(
         if (Object.keys(error.response.data.errors)[0]) {
             Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
         }
-        // throw new Error(error);
+        Notify("操作失败,请检查网络是否正常!");
         return Promise.reject(error);
     }
 )
