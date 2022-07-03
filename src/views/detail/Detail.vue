@@ -28,8 +28,8 @@
             }}</van-tag>
           </template>
           <template #footer>
-            <van-button  color="linear-gradient(#fcd51f, #feba23)" @click="addToCart">加入购物车</van-button>
-            <van-button  color="linear-gradient(#fe3e4e, #f72e1d)" @click="shopNow">立即购买</van-button>
+            <van-button  color="linear-gradient(#fcd51f, #feba23)" @click="addToCart" :disabled="goods.stock==0">加入购物车</van-button>
+            <van-button  color="linear-gradient(#fe3e4e, #f72e1d)" @click="shopNow"   :disabled="goods.stock==0">立即购买</van-button>
           </template>
         </van-card>
       </div>
@@ -56,7 +56,7 @@
 <script>
 import Navbar from "@/components/common/navbar/Navbar";
 import GoodList from '@/components/content/good/GoodList'
-import { useRoute } from "vue-router";
+import { useRoute,useRouter } from "vue-router";
 import { onMounted, ref, reactive, toRefs} from "vue";
 import { reqGoodDetail } from "@/api/detail";
 import {reqAddCart} from "@/api/shopcart";
@@ -71,6 +71,8 @@ export default {
   setup() {
     //获取当前路由信息
     const $route = useRoute();
+    //获取路由总管
+    const $router = useRouter();
     //获取存储仓库
     const $store = useStore();
     const id = ref();
@@ -91,27 +93,29 @@ export default {
       })
     }
     //添加到购物车
-    function addToCart(){
+    async function addToCart(){
       //判断是否有商品id
       if(!id.value){
         return;
       }
       //有商品id
-      reqAddCart({
-        goods_id:id.value,
-        num:1
-      }).then(res=>{
+      try {
+        await reqAddCart({
+            goods_id:id.value,
+            num:1
+        });
         Toast.success("添加购物车成功");
         //购物车数量+1
         $store.dispatch("setCarNum",1);
-      }).catch(()=>{
-        Toast.fail("添加购物车失败,请检查网络是否正常");
-      })
+      } catch (error) {
+        // Toast.fail("添加购物车失败,请检查网络是否正常");
+      }
     }
     //立即购买
-    function shopNow(){
+    async function shopNow(){
+      await addToCart();
       //其实应该跳转到结算页面的....
-
+      $router.push("/shopcart")
     }
     //记录数据
     onMounted(() => {

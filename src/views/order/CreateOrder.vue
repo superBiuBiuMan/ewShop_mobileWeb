@@ -13,7 +13,8 @@
         {{ addressInfo.province }} {{ addressInfo.county }}
         {{ addressInfo.city }} {{ addressInfo.address }}
       </div>
-      <van-icon class="arrow" name="arrow" />
+      <!-- 跳转到地址管理 -->
+      <van-icon class="arrow" name="arrow" @click="router.push('/address')"/>
     </div>
     <div class="good">
       <!-- 商品列表 -->
@@ -46,11 +47,12 @@
     >
       商品金额
     </van-submit-bar>
-
-    <!-- <van-popup
+    <!-- 支付二维码 -->
+    <!-- v-model:show="showPay" -->
+    <van-popup
       closeable
       :close-on-click-overlay="false"
-      v-model:show="showPay"
+      v-model:show="show"
       position="bottom"
       :style="{ height: '40%' }"
       @close="close"
@@ -58,20 +60,22 @@
       <van-grid :border="false" :column-num="2">
                 <van-grid-item>
                     支付宝二维码<br>
-                    <van-image width="150" height="150" :src="aliyun" />
+                    <!-- <van-image width="150" height="150" :src="aliyun" /> -->
+                    <van-image width="150" height="150" src="https://dreamlove.top/img/favicon.png" />
                 </van-grid-item>
                 <van-grid-item>
                     微信二维码<br>
-                    <van-image width="150" height="150" :src="wechat" />
+                    <!-- <van-image width="150" height="150" :src="wechat" /> -->
+                    <van-image width="150" height="150" src="https://dreamlove.top/img/favicon.png" />
                 </van-grid-item>
 
             </van-grid> 
-    </van-popup> -->
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { reactive, onMounted, toRefs, computed } from "vue";
+import { reactive, onMounted, toRefs, computed,ref } from "vue";
 import Navbar from "@/components/common/navbar/Navbar";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -82,8 +86,10 @@ export default {
     Navbar,
   },
   setup() {
+    //测试数据
+    const show = ref(true);
     //路由总管
-    const $router = useRouter();
+    const router = useRouter();
     const orderState = reactive({
       //默认地址信息
       addressInfo: {},
@@ -94,26 +100,28 @@ export default {
     });
     //生成订单
     async function handleCreateOrder() {
+      // forbidClick:true
+      Toast.loading({message:"提交中...",duration:0,});
       //1.判断是否有地址信息
-      if (orderState.addressInfo.id) {
-        Toast.loading({message:"提交中...",duration:0,forbidClick:true});
-        // orderState.address.id
-        try {
-            //1.提交订单
-            let createOrderInfo = await reqOrderCreate({ address_id: orderState.addressInfo.id });
-            //2.
-            Toast.clear();
+      // if (orderState.addressInfo.id) {
+      //   Toast.loading({message:"提交中...",duration:0,forbidClick:true});
+      //   // orderState.address.id
+      //   try {
+      //       //1.提交订单
+      //       let createOrderInfo = await reqOrderCreate({ address_id: orderState.addressInfo.id });
+      //       //2.
+      //       Toast.clear();
 
-        } catch (error) {
+      //   } catch (error) {
             
-        }
-      }
+      //   }
+      // }
     }
     //没有默认地址,跳转
     function goTo() {
       //如果没有name,说明为空,则跳转
       if (!orderState.addressInfo.name) {
-        $router.push("/address");
+        router.push("/address");
       }
     }
     /* 初始化操作 */
@@ -156,6 +164,8 @@ export default {
       ...toRefs(orderState),
       goTo,
       handleCreateOrder,
+      router,
+      show
     };
   },
 };
@@ -164,6 +174,9 @@ export default {
 <style lang="less" scoped>
 #create-order {
   background: #f9f9f9;
+  :deep(.van-toast){
+    background:red!important;
+  }
   .address-wrap {
     text-align: left;
     margin-bottom: 20px;

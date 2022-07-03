@@ -13,6 +13,7 @@ const Login = ()=>import("@/views/user/Login");
 const AddressManager = ()=>import("@/views/user/Address/AddressManager");
 const AddressEdit = ()=>import("@/views/user/Address/AddressEdit");
 const CreateOrder = ()=>import("@/views/order/CreateOrder");
+const Order = ()=>import("@/views/order/Order");
 // meta为定义window.title的属性所用
 const routes = [{
     path: "/home",
@@ -101,6 +102,14 @@ const routes = [{
     component:CreateOrder,
     meta:{
       title:"订单预览-dreamlove.top"
+    }
+  },
+  {
+    name:"order",
+    path:"/order",
+    component:Order,
+    meta:{
+      title:"订单管理-dreamlove.top"
     }
   },
   // {

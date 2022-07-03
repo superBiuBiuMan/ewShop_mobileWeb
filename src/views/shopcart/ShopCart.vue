@@ -54,6 +54,7 @@ import { ref,reactive,onMounted,toRefs,computed, } from "vue";
 import {reqListCart,reqChangeNumCart,reqChangeStateCart,reqRemoveCart} from "@/api/shopcart";
 import debounce from "lodash/debounce";
 import {useStore} from "vuex";
+import {useRouter} from "vue-router";
 import {Toast,Dialog} from "vant";
 export default {
   name: "Shopcart",
@@ -61,6 +62,8 @@ export default {
     Navbar,
   },
   setup() {
+    const $router = useRouter();
+    //获取仓库
     const $store = useStore();
     //商品项信息
     const shopList = reactive({
@@ -134,8 +137,8 @@ export default {
     }
     //提交订单
     function onSubmit(){
-      console.log('你单击了提交订单');
-      
+      Toast.loading({forbidClick:true});
+      $router.push("/createorder");
     }
     //请求购物车信息
     function init(){
