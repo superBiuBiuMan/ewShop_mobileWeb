@@ -56,3 +56,6 @@ a{
 .van-icon-success:before {
     font-size: 36px!important;
 }
+.van-notify--danger{
+   background: var(--van-notify-danger-background-color)!important;
+}

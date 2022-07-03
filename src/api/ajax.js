@@ -37,7 +37,7 @@ service.interceptors.response.use(
         if (Object.keys(error.response.data.errors)[0]) {
             Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
         }
-        Notify("操作失败,请检查网络是否正常!");
+        Notify({type: 'danger',message:"操作失败,请检查网络是否正常!"});
         return Promise.reject(error);
     }
 )

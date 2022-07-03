@@ -10,6 +10,8 @@ const User = ()=>import("@/views/user/User");
 const Detail = ()=>import("@/views/detail/Detail");
 const Register = ()=>import("@/views/user/Register");
 const Login = ()=>import("@/views/user/Login");
+const AddressManager = ()=>import("@/views/user/Address/AddressManager");
+const AddressEdit = ()=>import("@/views/user/Address/AddressEdit");
 // meta为定义window.title的属性所用
 const routes = [{
     path: "/home",
@@ -24,7 +26,7 @@ const routes = [{
     name: "shopcart",
     component: ShopCart,
     meta:{
-      title:"图书兄弟-购物车"
+      title:"购物车-dreamlove.top"
     }
   },
   {
@@ -32,7 +34,7 @@ const routes = [{
     name: "category",
     component: Category,
     meta:{
-      title:"图书兄弟-商品分类"
+      title:"商品分类-dreamlove.top"
     }
   },
   {
@@ -40,7 +42,7 @@ const routes = [{
     name: "user",
     component: User,
     meta:{
-      title:"图书兄弟-个人中心"
+      title:"个人中心-dreamlove.top"
     },
     beforeEnter: (to, from, next) => {
       next();
@@ -51,7 +53,7 @@ const routes = [{
     name:"detail",
     component:Detail,
     meta:{
-      title:"图书兄弟-详细信息"
+      title:"详细信息-dreamlove.top"
     }
   },
   {
@@ -59,7 +61,7 @@ const routes = [{
     name:"register",
     component:Register,
     meta:{
-      title:"图书兄弟-用户注册"
+      title:"用户注册-dreamlove.top"
     },
     beforeEnter: (to, from, next) => {
       next();
@@ -70,12 +72,36 @@ const routes = [{
     name:"login",
     component:Login,
     meta:{
-      title:"图书兄弟-用户登录"
+      title:"用户登录-dreamlove.top"
     },
     beforeEnter: (to, from, next) => {
       next();
     }
   },
+  {
+    path:"/address",
+    name:"address",
+    component:AddressManager,
+    meta:{
+      title:"地址管理-dreamlove.top"
+    }
+  },
+  {
+    path:"/addressedit",
+    name:"addressedit",
+    component:AddressEdit,
+    meta:{
+      title:"地址编辑-dreamlove.top"
+    }
+  },
+  // {
+  //   path:"/addresse/:edit",
+  //   name:"addressedit",
+  //   component:AddressEdit,
+  //   meta:{
+  //     title:"地址编辑-dreamlove.top"
+  //   }
+  // },
   //重定向
   {
     path: '/',
