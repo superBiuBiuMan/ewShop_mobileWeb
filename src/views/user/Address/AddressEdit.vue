@@ -16,14 +16,13 @@
       :area-columns-placeholder="['请选择', '请选择', '请选择']"
       @save="onSave"
       @delete="onDelete"
-      
     />
   </div>
 </template>
 
 <script>
 import Navbar from "@/components/common/navbar/Navbar";
-import {reqAddAddress,reqAddressDetail,reqAddressDelete} from "@/api/address";
+import {reqAddAddress,reqAddressDetail,reqAddressDelete,reqAddressUpdate} from "@/api/address";
 //Vant 官方提供了一份默认的中国省市区数据
 import { areaList } from '@vant/area-data';
 import {Toast} from "vant";
@@ -82,7 +81,7 @@ export default {
     }
     //用户单击保存
     function onSave(content){
-      Toast.loading({message:"添加中...",duration:0,forbidClick:true});
+      Toast.loading({message:"操作中...",duration:0,forbidClick:true});
       //#region 
       // content对象内容
       // addressDetail: "高大街"    详细地址
@@ -106,14 +105,18 @@ export default {
         county:content.county,
         is_default:content.isDefault ? 1 : 0,
       };
-      //2.发送请求
-      reqAddAddress(data).then(res=>{
+      //2.判断是增加还是修改
+      let reqFn = $route.query.type==0?reqAddAddress:reqAddressUpdate;
+      //3.判断参数
+      let param = $route.query.type==0?[data]:[$route.query.id,data];
+      //4.发送请求
+      reqFn(...param).then(()=>{
         Toast.clear();
-        Toast.success('添加成功!');
+        Toast.success($route.query.type==0?'添加成功!':'修改成功!');
         setTimeout(() => {
            $router.go(-1);
         }, 800);
-      }).catch(res=>{
+      }).catch(()=>{
         Toast.clear();
       })
     }

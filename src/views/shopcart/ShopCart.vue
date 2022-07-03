@@ -132,13 +132,10 @@ export default {
         cart_ids:checkList
       })
     }
-    // shopList.checked=computed(()=>{
-    //   console.log(shopList.list,shopList.cartChecked);
-    //   return shopList.list.length == shopList.cartChecked.length;
-    // })
     //提交订单
     function onSubmit(){
       console.log('你单击了提交订单');
+      
     }
     //请求购物车信息
     function init(){
