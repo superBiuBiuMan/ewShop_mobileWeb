@@ -58,7 +58,6 @@ export default {
     });
     //监视路由的改变,如果改变了,添加进入
     watch(() => route,(newVal,oldVal)=>{
-      console.log(newVal.meta.keepAlive);
       if(newVal.meta.keepAlive && state.includeList.indexOf(newVal.name) === -1){
           state.includeList.push(newVal.name);
       }

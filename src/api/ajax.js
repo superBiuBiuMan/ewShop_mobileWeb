@@ -34,10 +34,27 @@ service.interceptors.response.use(
     },
     (error) => {
         nprogress.done();
-        if (Object.keys(error.response.data.errors)[0]) {
-            Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
+        //注册出现问题
+        if(error.response.data.errors){
+            // 获取对象所有的key值
+            let AllKey = Object.keys(error.response.data.errors)
+            if(AllKey.length){
+                let message = error.response.data.errors[AllKey[0]][0];
+                //不为空
+                Notify({type: 'danger',message:'注册失败'+message});
+            }else{
+                Notify({type: 'danger',message:"操作失败,请检查网络或者参数是否正常!"});
+            }
+        }else{
+            Notify({type: 'danger',message:"操作失败,请检查网络是否正常!"});
         }
-        Notify({type: 'danger',message:"操作失败,请检查网络是否正常!"});
+        // if(Object.keys(error.response.data.errors)){
+        //     Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
+        // }
+        // if (Object.keys(error.response.data.errors)[0]) {
+        //     Notify(error.response.data.errors[Object.keys(error.response.data.errors)[0]][0])
+        // }
+
         return Promise.reject(error);
     }
 )

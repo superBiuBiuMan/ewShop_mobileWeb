@@ -54,6 +54,7 @@ import { reactive, toRefs, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Toast } from "vant";
 import { reqLoginOut,reqUserInfo } from "@/api/user";
+import { useStore } from 'vuex';
 export default {
   name: "Profile",
   components: {
@@ -61,6 +62,7 @@ export default {
   },
   setup() {
     const $router = useRouter();
+    const $store = useStore();
     //存储数据
     const userInfo = reactive({
       name:"",
@@ -76,17 +78,21 @@ export default {
       Toast.loading({ duration: 0, message: "退出中...", forbidClick: true });
       reqLoginOut().then((res) => {
         Toast.clear();
-        Toast.success("退出登录成功...");
-        //然后应该跳转下
+        //清空认证信息内容
+        $store.dispatch("setLoginOut","");
+        Toast.success("登出成功...");
+        //然后应该跳转下,跳转到主页算了
+        $router.push("/");
       });
     }
     //初始化挂载请求
     function init(){
         Toast.loading({duration:0,message:"正在加载..."});
         reqUserInfo().then(res=>{
-          Toast.clear();
           userInfo.name = res.name;
           userInfo.email = res.email;
+        }).finally(()=>{
+          Toast.clear();
         })
     }
     onMounted(()=>{

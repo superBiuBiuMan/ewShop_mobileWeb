@@ -148,12 +148,13 @@ export default {
     function init(){
       Toast.loading({message:"正在加载...",forbidClick:true,duration:0})
       reqListCart(1).then((res)=>{
-        //关闭提示框
-        Toast.clear();
         //保存用户购物车信息
         shopList.list = res.data;
         //保存选中项 filter返回过滤后的,map返回指定处理后的数组
         shopList.cartChecked=res.data.filter(item1=>item1.is_checked===1).map(item2=>item2.id);
+      }).finally(()=>{
+        //关闭提示框
+        Toast.clear();
       })
     }
     //购物车数量商品数量被改变,第一个参数更新后的商品数量,第二个参数为一些详细信息

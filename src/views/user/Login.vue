@@ -119,10 +119,10 @@ export default {
         userInfo.email = "";
         userInfo.password="";
         //跳转到位置
-        // setTimeout(() => {
-        //     //返回到之前的位置
-        //     $router 
-        // }, 800);
+        setTimeout(() => {
+            //返回到之前的位置
+            $router.go(-1);
+        }, 800);
       }).catch(reason=>{
          //关闭提示
         Toast.clear();

@@ -21,6 +21,10 @@ const mutations = {
     /* 初始化设置 */
     SET_CAR_NUM_INIT(state,value){
         state.amountCarts = value;
+    },
+    /* 退出登录 */
+    SET_LOGIN_OUT(state,value){
+        state.Authorization = value;
     }
 };
 
@@ -39,6 +43,11 @@ const actions = {
     setCarNum({commit},value){
         commit("SET_CAR_NUM",value);
     },
+    /* 退出登录 */
+    setLoginOut({commit},value){
+        window.localStorage.setItem("EWSHOPAUTHORIZATION","");
+        commit("SET_LOGIN_OUT","");
+    }
 };
 
 const getters = {
