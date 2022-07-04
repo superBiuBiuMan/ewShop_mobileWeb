@@ -97,11 +97,11 @@ export default {
   margin-top: 45px;
   .content {
     background: white; 
-    ::v-deep .van-radio__icon {
+    :deep(.van-radio__icon) {
       display: none;
     }
   }
-  ::v-deep .van-address-list__bottom{
+  :deep(.van-address-list__bottom){
       bottom: 50px;
       background-color:unset;
     }

@@ -81,7 +81,7 @@ export default {
       totalPage:1,
     });
 
-    //加载更多数据
+    //上拉加载更多数据 
     function onLoad() {
       // 当组件滚动到底部时，会触发 load 事件并将 loading 设置成 true
       //此时可以发起异步操作并更新数据，数据更新完毕后，将 loading 设置成 false 即可
@@ -97,11 +97,12 @@ export default {
       orderState.page++;
       init();
     }
-    //下拉列表刷新
+    //下拉列表刷新 手指下拉然后松开
     function onRefresh() {
+      console.log(orderState);
       //有下面任意一个条件为真,则不进行刷新
       //排除自身的refreshing,因为执行到这里,肯定是refreshing=true了
-      if(orderState.loading||orderState.finished){
+      if(orderState.loading){
         return;
       }
       console.log("执行下拉刷新");
@@ -134,6 +135,8 @@ export default {
           if(orderState.page >=orderState.totalPage){
             orderState.finished = true;
           }
+      }).finally(()=>{
+        Toast.clear();
       })
 
     }
@@ -172,7 +175,7 @@ export default {
       onRefresh,
       onLoad,
       onChangeTab,
-      goOrderDetail
+      goOrderDetail,
     };
   },
 };

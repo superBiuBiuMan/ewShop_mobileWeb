@@ -251,7 +251,7 @@ export default {
     }
   }
 }
-::v-deep .van-icon-success:before {
+:deep(.van-icon-success:before) {
   font-size: 14px !important;
 }
 

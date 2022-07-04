@@ -285,12 +285,12 @@ export default {
   }
 }
 //重新定义侧边导航样式
-::v-deep .van-collapse-item__content {
+:deep(.van-collapse-item__content) {
   padding: 0;
   margin: 0;
   width: 100%;
 }
-::v-deep.van-sidebar {
+:deep(.van-sidebar) {
   width: 100%;
 }
 </style>

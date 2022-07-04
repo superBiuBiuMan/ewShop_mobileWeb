@@ -88,8 +88,8 @@ export default {
     const $router = useRouter();
     /* 存储用户注册信息 */
     const userInfo = reactive({
-        name:"jioajfioawf",
-        email:"252j0ioaw@qq.com",
+        name:"梦洁小站在此",
+        email:"zmqdream@qq.com",
         password:"123456789",
         password_confirmation:"123456789"
     });

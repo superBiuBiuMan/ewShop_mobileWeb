@@ -67,7 +67,8 @@ const routes = [
     },
   },
   {
-    //需要有商品id才可以并且登录后才可以加入购物车和立即购买
+    //需要有商品id才可以进入
+    //在加入购物车和立即购买需要登录后才可以
     path: "/detail",
     name: "Detail",
     component: Detail,
@@ -171,7 +172,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
 })
 //导航守卫
 router.beforeEach((to, from, next) => {
@@ -182,7 +183,6 @@ router.beforeEach((to, from, next) => {
   if (path === "/" || path === "/category" || path === "/detail" || path === "/register" || path === "/login" || path === "/about") {
     next();
   } else {
-    console.log("认证信息", store.state.user.Authorization);
     if (store.state.user.Authorization) {
       //有认证信息，放行
       next();

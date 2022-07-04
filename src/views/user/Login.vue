@@ -74,10 +74,9 @@ export default {
     const $route = useRoute();
     //store
     const $store = useStore();
-    console.log($store);
      /* 存储用户登录输入信息 */
     const userInfo = reactive({
-        email:"superBiuBiu@qq.com",
+        email:"zmqdream@qq.com",
         password:"123456789",
     });
     //空对象就算是空的,转化为布尔值也是为真

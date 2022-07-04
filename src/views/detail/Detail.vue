@@ -74,7 +74,7 @@ export default {
     //获取路由总管
     const $router = useRouter();
     //获取存储仓库
-    const $store = useStore();
+    const store = useStore();
     const id = ref();
     //记录当前选择项
     const active = ref(0);
@@ -92,8 +92,24 @@ export default {
         bahavior:'smooth',
       })
     }
+    //判断是否可以加入购物车和立即购买
+    function canBuy(){
+      //具有认证信息
+      if(store.state.user.Authorization){
+        return true;
+      }else{
+        return false;
+      }
+    }
     //添加到购物车
     async function addToCart(){
+      let isCanBuy = canBuy();
+      if(!isCanBuy){
+        //不可以添加到购物车
+        //跳转到登录
+        $router.push("/login");
+        return;
+      }
       //判断是否有商品id
       if(!id.value){
         return;
@@ -106,13 +122,20 @@ export default {
         });
         Toast.success("添加购物车成功");
         //购物车数量+1
-        $store.dispatch("setCarNum",1);
+        store.dispatch("setCarNum",1);
       } catch (error) {
         // Toast.fail("添加购物车失败,请检查网络是否正常");
       }
     }
     //立即购买
     async function shopNow(){
+      let isCanBuy = canBuy();
+      if(!isCanBuy){
+        //不可以添加到购物车
+        //跳转到登录
+        $router.push("/login");
+        return;
+      }
       await addToCart();
       //其实应该跳转到结算页面的....
       $router.push("/shopcart")
@@ -134,7 +157,8 @@ export default {
       active,
       onClickTab,
       addToCart,
-      shopNow
+      shopNow,
+      store
     };
   },
 };
@@ -154,7 +178,7 @@ export default {
   }
   //用户操作和书籍信息
   .operation {
-    ::v-deep .van-card__price-integer{
+    :deep(.van-card__price-integer){
       font-size: 20px;
       color: #f8230b;
     }
@@ -162,10 +186,10 @@ export default {
   //选择器
   .nav-select{
     width: 100vw;
-    ::v-deep .van-tabs__wrap {
+    :deep(.van-tabs__wrap) {
       padding-bottom: 10px;
     }
-    ::v-deep .book-detail-info{
+    :deep(.book-detail-info){
       img{
         // width: 300px!important;
         width: 100%;
