@@ -37,8 +37,12 @@ export function reqOrderCreate(data){
 */
 export function reqOrderDetail(orderID){
     return ajax({
-        url:`/api/orders/${orderID}?=include=orderDetails.goods,address`,
+        // url:`/api/orders/${orderID}?include=orderDetails.goods,address`,
+        url:`/api/orders/${orderID}`,
         method:"get",
+        params: {
+            include:'orderDetails.goods,address'
+        }
     })
 }
 
