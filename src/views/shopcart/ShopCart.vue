@@ -36,13 +36,13 @@
         </van-swipe-cell>
       </van-checkbox-group>
       <!-- 全选 -->
-        <van-submit-bar :price="total" button-text="提交订单" @submit="onSubmit" style="bottom:50px;">
+        <van-submit-bar :price="total" button-text="预览订单" @submit="onSubmit" style="bottom:50px;">
           <van-checkbox v-model="checkedAll" @click="checkAll">全选</van-checkbox>
         </van-submit-bar>
       <div class="empty" v-if="!list.length">
         <img class="empty-cart" src="~assets/image/empty-car.png" alt="空购物车">
         <div class="title">购物车空空如也</div>
-        <van-button round color="#1baeae" type="primary" block >前往选购</van-button>
+        <van-button round color="#1baeae" type="primary" block @click="toShopping">前往选购</van-button>
       </div>
     </div>
   </div>
@@ -85,6 +85,10 @@ export default {
       })
       return sum*100;
     })
+    //前往购物
+    function toShopping(){
+      $router.push("/");
+    }
     //左滑删除按钮单击事件
     function deleteGood(id,index,title){
       Dialog.confirm({
@@ -180,7 +184,8 @@ export default {
       onChange,
       groupChange,
       checkAll,
-      deleteGood
+      deleteGood,
+      toShopping
     };
   },
 };

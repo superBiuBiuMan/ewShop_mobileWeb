@@ -57,7 +57,7 @@ import {useRouter} from "vue-router";
 import { reqOrderList } from "@/api/order";
 import {Toast} from "vant";
 export default {
-  name: "",
+  name: "Order",
   components: {
     Navbar,
   },

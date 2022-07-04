@@ -1,5 +1,6 @@
 
 import {reqListCart} from "@/api/shopcart";
+
 const state = {
     //用户token
     Authorization:getToken(),
@@ -16,6 +17,10 @@ const mutations = {
     SET_CAR_NUM(state,value){
         //也有可能是负数
         state.amountCarts+=value;
+    },
+    /* 初始化设置 */
+    SET_CAR_NUM_INIT(state,value){
+        state.amountCarts = value;
     }
 };
 
@@ -27,13 +32,13 @@ const actions = {
     /* 请求设置购物车进而获取商品数量,初始化的时候 */
     setReqCarNum({commit}){
         reqListCart().then(res=>{
-            commit("SET_CAR_NUM",res.data.length||0);
+            commit("SET_CAR_NUM_INIT",res.data.length);
         })
     },
     /* 设置购物车商品数量 */
     setCarNum({commit},value){
         commit("SET_CAR_NUM",value);
-    }
+    },
 };
 
 const getters = {

@@ -15,18 +15,30 @@ const AddressEdit = ()=>import("@/views/user/Address/AddressEdit");
 const CreateOrder = ()=>import("@/views/order/CreateOrder");
 const Order = ()=>import("@/views/order/Order");
 const OrderDetail = ()=>import("@/views/order/OrderDetail");
+const About = ()=>import("@/views/other/About");
 // meta为定义window.title的属性所用
-const routes = [{
-    path: "/home",
-    name: "home",
-    component: Home,
+const routes = [
+  // {
+  //   path: "/home",
+  //   name: "Home",
+  //   component: Home,
+  //   meta:{
+  //     title:"图书兄弟",
+  //     keepAlive: true, // 组件需要缓存
+  //   },
+  // },
+  {
+    path: '/',
+    name:"Home",
+    component:Home,
     meta:{
-      title:"图书兄弟"
+      title:"梦洁小站-图书兄弟",
+      keepAlive: true, // 组件需要缓存
     },
   },
   {
     path: "/shopcart",
-    name: "shopcart",
+    name: "Shopcart",
     component: ShopCart,
     meta:{
       title:"购物车-dreamlove.top"
@@ -34,18 +46,20 @@ const routes = [{
   },
   {
     path: "/category",
-    name: "category",
+    name: "Category",
     component: Category,
     meta:{
-      title:"商品分类-dreamlove.top"
+      title:"商品分类-dreamlove.top",
+      keepAlive: true, // 组件需要缓存
     }
   },
   {
     path: "/user",
-    name: "user",
+    name: "User",
     component: User,
     meta:{
-      title:"个人中心-dreamlove.top"
+      title:"个人中心-dreamlove.top",
+      keepAlive: true, // 组件需要缓存
     },
     beforeEnter: (to, from, next) => {
       next();
@@ -53,7 +67,7 @@ const routes = [{
   },
   {
     path:"/detail",
-    name:"detail",
+    name:"Detail",
     component:Detail,
     meta:{
       title:"详细信息-dreamlove.top"
@@ -61,7 +75,7 @@ const routes = [{
   },
   {
     path:"/register",
-    name:"register",
+    name:"Register",
     component:Register,
     meta:{
       title:"用户注册-dreamlove.top"
@@ -72,7 +86,7 @@ const routes = [{
   },
   {
     path:"/login",
-    name:"login",
+    name:"Login",
     component:Login,
     meta:{
       title:"用户登录-dreamlove.top"
@@ -83,7 +97,7 @@ const routes = [{
   },
   {
     path:"/address",
-    name:"address",
+    name:"Address",
     component:AddressManager,
     meta:{
       title:"地址管理-dreamlove.top"
@@ -91,7 +105,7 @@ const routes = [{
   },
   {
     path:"/addressedit",
-    name:"addressedit",
+    name:"Addressedit",
     component:AddressEdit,
     meta:{
       title:"地址编辑-dreamlove.top"
@@ -99,14 +113,14 @@ const routes = [{
   },
   {
     path:"/createorder",
-    name:"createorder",
+    name:"CreateOrder",
     component:CreateOrder,
     meta:{
       title:"订单预览-dreamlove.top"
     }
   },
   {
-    name:"order",
+    name:"Order",
     path:"/order",
     component:Order,
     meta:{
@@ -114,30 +128,22 @@ const routes = [{
     }
   },
   {
-    name:"orderdetail",
+    name:"Orderdetail",
     path:"/orderdetail",
     component:OrderDetail,
     meta:{
       title:"订单详情-dreamlove.top"
     }
   },
-  // {
-  //   path:"/addresse/:edit",
-  //   name:"addressedit",
-  //   component:AddressEdit,
-  //   meta:{
-  //     title:"地址编辑-dreamlove.top"
-  //   }
-  // },
-  //重定向
   {
-    path: '/',
-    name:"default",
-    component:Home,
+    path:"/about",
+    name:"About",
+    component:About,
     meta:{
-      title:"图书兄弟"
-    },
+      title:"关于我们-dreamlove.top",
+    }
   },
+
 ]
 
 

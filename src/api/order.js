@@ -67,14 +67,14 @@ export function reqOrderList(params){
     order	是	int	订单ID
 */
 export function reqOrderConfirm(order) {
-    return request({
+    return ajax({
         url:`/api/orders/${order}/confirm`,
         method: 'patch'
     })
 }
 /* 获取物流信息  受到测试号的限制， 每天请求超过一定次数（约20次），就会出现服务器500错误 */   
 export function viewExpress(order) {
-    return request({
+    return ajax({
         url:`/api/orders/${order}/express`,
         method:"get"
     })
@@ -90,9 +90,17 @@ export function viewExpress(order) {
         type	是	string	支付类型，只能是：aliyun， wechat
         注意： 推荐使用aliyun，也就是支付宝支付，微信wechat并没有提供沙箱环境，需要正式的企业认证商户号才能支付
 */
-export function payOrder(order, params) {
-    return request({
-        url:`/api/orders/${order}/pay`,
+export function payOrder(orderId, params) {
+    return ajax({
+        url:`/api/orders/${orderId}/pay`,
         params
+    })
+}
+/* 获取订单状态
+ */
+export function payOrderStatus(orderId) {
+    return ajax({
+        url:`/api/orders/${orderId}/status`,
+        method:"get",
     })
 }

@@ -16,7 +16,8 @@
       </div>
 
       <ul class="user-list">
-        <li class="van-hairline--bottom" @click="goTo('/collect')">
+        <li class="van-hairline--bottom"  style="background-color:rgb(241 241 241);" >
+          <!-- @click="goTo('/collect')" -->
           <span>我的收藏</span>
           <van-icon name="arrow" />
         </li>
@@ -24,7 +25,8 @@
           <span>我的订单</span>
           <van-icon name="arrow" />
         </li>
-        <li class="van-hairline--bottom" @click="goTo('/setting')">
+        <li class="van-hairline--bottom" style="background-color:rgb(241 241 241);">
+          <!-- @click="goTo('/setting')" -->
           <span>账号管理</span>
           <van-icon name="arrow" />
         </li>
@@ -175,6 +177,7 @@ export default {
       padding: 0 8px;
       margin-top: 40px;
       li {
+        
         padding-left: 5px;
         padding-right: 5px;
         height: 40px;

@@ -41,34 +41,33 @@
     <van-submit-bar
       class="submit-all"
       :price="totalPrice * 100"
-      button-text="生成订单"
+      button-text="确认订单"
       :disabled="!addressInfo.name ||cartList.length==0"
       @submit="handleCreateOrder"
     >
       商品金额
     </van-submit-bar>
     <!-- 支付二维码 -->
-    <!-- v-model:show="showPay" -->
     <van-popup
       closeable
       :close-on-click-overlay="false"
-      v-model:show="show"
+      v-model:show="showPay"
       position="bottom"
       :style="{ height: '40%' }"
-      @close="close"
+      @close="closePay"
     >
       <van-grid :border="false" :column-num="2">
                 <van-grid-item>
                     支付宝二维码<br>
                     <!-- <van-image width="150" height="150" :src="aliyun" /> -->
-                    <van-image width="150" height="150" src="https://dreamlove.top/img/favicon.png" />
+                    <van-image width="150" height="150" :src="qr_codeAli" />
                 </van-grid-item>
                 <van-grid-item>
-                    微信二维码<br>
+                    <!-- 接口原因~也换为支付宝 -->
+                    这里也是支付宝~<br>
                     <!-- <van-image width="150" height="150" :src="wechat" /> -->
-                    <van-image width="150" height="150" src="https://dreamlove.top/img/favicon.png" />
+                    <van-image width="150" height="150" :src="qr_codeAli" />
                 </van-grid-item>
-
             </van-grid> 
     </van-popup>
   </div>
@@ -77,19 +76,26 @@
 <script>
 import { reactive, onMounted, toRefs, computed,ref } from "vue";
 import Navbar from "@/components/common/navbar/Navbar";
-import { useRoute, useRouter } from "vue-router";
+import {useRouter } from "vue-router";
 import { useStore } from "vuex";
-import { reqOrderPreview, reqOrderCreate } from "@/api/order";
+import { reqOrderPreview, reqOrderCreate,payOrder,payOrderStatus } from "@/api/order";
 import { Toast } from "vant";
 export default {
+  name:"CreateOrder",
   components: {
     Navbar,
   },
   setup() {
+    clearInterval(timer);
     //测试数据
     const show = ref(true);
     //路由总管
     const router = useRouter();
+    //仓库
+    const store = useStore();
+    //轮询定时器timer
+    var timer = "";
+    //订单信息
     const orderState = reactive({
       //默认地址信息
       addressInfo: {},
@@ -97,25 +103,64 @@ export default {
       cartList: [],
       //商品总价
       totalPrice: "",
+      //支付二维码(支付宝)这里只用支付宝,因为他们接口原因,
+      qr_codeAli:"",
+      qr_codeWeChat:"",
+      //提交订单后返回的订单id
+      orderId:""
     });
+    //控制支付窗口的显示/隐藏
+    const showPay = ref(false);
+    //支付窗口被关闭
+    function closePay(){
+      console.log("你关闭了支付窗口");
+      //1.已经自动设置了隐藏支付窗口
+      //2.关闭轮询
+      clearInterval(timer);
+      //3.跳转到订单详情
+      router.push({path:'/orderdetail', query:{id:orderState.orderId}});
+    }
     //生成订单
     async function handleCreateOrder() {
-      // forbidClick:true
-      Toast.loading({message:"提交中...",duration:0,});
       //1.判断是否有地址信息
-      // if (orderState.addressInfo.id) {
-      //   Toast.loading({message:"提交中...",duration:0,forbidClick:true});
-      //   // orderState.address.id
-      //   try {
-      //       //1.提交订单
-      //       let createOrderInfo = await reqOrderCreate({ address_id: orderState.addressInfo.id });
-      //       //2.
-      //       Toast.clear();
-
-      //   } catch (error) {
-            
-      //   }
-      // }
+      if (orderState.addressInfo.id) {
+        Toast.loading({message:"提交中...",duration:0,forbidClick:true});
+        try {
+            //1.提交订单
+            let createOrderInfo = await reqOrderCreate({ address_id: orderState.addressInfo.id });
+            //1.1重新计算购物车数量
+            store.dispatch('setReqCarNum');
+            //2.提交返回的订单id,进行再次提交获取支付二维码,(api接口问题,这里用支付宝,具体沙箱支付宝这里提供了)
+            orderState.orderId = createOrderInfo.id;
+            //3.请求支付宝二维码 
+            let qrCodeInfo = await payOrder(orderState.orderId,{type:'aliyun'});
+            //4.保存二维码
+            // 当然,你也可以选择跳转到支付宝支付~使用qr_code就可以
+            orderState.qr_codeAli = qrCodeInfo.qr_code_url;
+            //5.显示支付窗口
+            showPay.value = true;
+            //6.关闭提示框
+            Toast.clear();
+            //7.开始轮询 1.5秒轮询一次 api有bug无法支付成!,就算成功了也没有....
+            // setTimeout(() => {
+            //     router.push({path:'/orderdetail', query:{id:orderState.orderId}});
+            // }, 3000);
+            timer = setInterval(async () => {
+              let payResult = await payOrderStatus(orderState.orderId);
+              if(payResult == 2){
+                //支付成功
+                //1.清除定时器
+                clearInterval(timer);
+                //2.消息提示
+                Toast.success("支付成功...");
+                //3.跳转到订单详情
+                router.push({path:'/orderdetail', query:{id:orderState.orderId}});
+              }
+            }, 2000);
+        } catch (error) {
+            console.log(error);
+        }
+      }
     }
     //没有默认地址,跳转
     function goTo() {
@@ -165,7 +210,9 @@ export default {
       goTo,
       handleCreateOrder,
       router,
-      show
+      show,
+      closePay,
+      showPay
     };
   },
 };
