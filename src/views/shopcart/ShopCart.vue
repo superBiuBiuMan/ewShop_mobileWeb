@@ -208,7 +208,6 @@ export default {
           width: 100%;
           height: auto;
         }
-        
       }
     }
     .good-detail-wrapper{

@@ -83,7 +83,8 @@ export default {
   },
   setup() {
     //左分类默认项
-    const activeSecond = ref(0); //二级分类列表目前活动项
+    //设置为99999,就不会出现初始化的时候单击任意一级菜单看到二级菜单选中的情况了
+    const activeSecond = ref(99999); //二级分类列表目前活动项
     const activeName = ref(); //一级分类列表的活动项记录
     const activeTab = ref(0); //nav的选中项记录
     const categoryList = ref([]); //左侧分类列表
