@@ -53,6 +53,7 @@ import {
 /* 第三方插件 */
 import BetterScroll from "better-scroll";
 import throttle from "lodash/throttle";
+import debounce from "lodash/debounce";
 export default {
   name: "Home",
   components: {
@@ -86,10 +87,21 @@ export default {
     let swiperData = ref([]);
     /* 变量-better-scroll示例对象 */
     let bs = reactive({});
-
+    //添加窗口大小改变事件,这样子就不会出现从pc切换到移动端无法滚动了
+    // window.onresize = throttle(()=>{
+    //   console.log("窗口大小被改变了");
+    //   setTimeout(() => {
+    //       bs.refresh();
+    //   }, 400);
+    //     // 重新计算高度
+    //     // Object.keys(bs).length > 0 ? bs.refresh() : "";
+    // },100)
+    window.onresize = debounce(()=>{
+      console.log("窗口大小被改变了");
+      location.reload();
+    },80)
     onMounted(() => {
       //距离顶部的距离和加上自己的宽度
-
       /* 请求-获取畅销书籍*/
       reqIndex().then((salesData) => {
         goods.sales.list = salesData.goods.data;
@@ -114,7 +126,6 @@ export default {
         click: true,
         pullUpLoad: true,
       });
-
       // //添加滚动事件,使用下节流阀
       bs.on(
         "scroll",
@@ -129,7 +140,6 @@ export default {
           console.log("到底部了");
           //发送ajax请求获取新页
           const page = goods[currentType.value].page + 1;
-
           reqProgram(currentType.value, page).then((response) => {
             //新请求的数据添加到原来数据
             goods[currentType.value].list.push(...response.goods.data);

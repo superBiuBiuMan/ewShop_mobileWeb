@@ -76,14 +76,14 @@ const routes = [
       title: "详细信息-dreamlove.top"
     },
     beforeEnter: (to, from, next) => {
-      if(to.query.id){
+      if (to.query.id) {
         //id存在
         next();
-      }else{
+      } else {
         //id不存在
         next("/");
       }
-      
+
     }
   },
   {
@@ -173,6 +173,12 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  scrollBehavior() {
+    return {
+      left: 0,
+      top: 0
+    }
+  }
 })
 //导航守卫
 router.beforeEach((to, from, next) => {
