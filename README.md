@@ -6,7 +6,7 @@
   * [github下载](https://github.com/superBiuBiuMan/ewShop_mobileWeb)
   * [gitee下载](https://gitee.com/superBiuBiu/ewShop_mobileWeb)
 * **在线演示**
-  * http://82.156.205.62:8084/
+  * https://ew-shop-mobile-web.vercel.app/
 * 其他要点
   * 也欢迎大家来我博客看看,博客地址https://www.dreamlove.top/
   * 支付宝沙箱版下载
